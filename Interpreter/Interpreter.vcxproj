@@ -78,7 +78,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="commands.c" />
     <ClCompile Include="main.c" />
+    <ClCompile Include="interpreter.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="commands.h" />
+    <ClInclude Include="interpreter.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
