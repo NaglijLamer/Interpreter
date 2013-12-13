@@ -1,8 +1,9 @@
+//File with switch(byte_code_command) and some functions for stack.
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "interpreter.h"
 
-//File with switch(byte_code_command) and some functions for stack.
 
 //Push element on TOS.
 void push(stack_t** stackp, string_t* value)

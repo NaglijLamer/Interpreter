@@ -1,4 +1,5 @@
 //File with realization of bytecode commands.
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "interpreter.h"
@@ -181,3 +182,143 @@ void command_IDIV(stack_t** stackp)
 	free(divisor);
 	push(stackp, quotient);
 }
+
+//Modulo operation on 2 ints on TOS (upper to lower), push value back.
+void command_IMOD(stack_t** stackp)
+{
+	string_t *dividend , *divisor, *modulo;
+	dividend = pop(stackp);
+	divisor = pop(stackp);
+	modulo = (string_t*)malloc(sizeof(string_t));
+	modulo->inumber = dividend->inumber % divisor->inumber;
+	free(dividend);
+	free(divisor);
+	push(stackp, modulo);
+}
+
+//Negate double on TOS.
+void command_DNEG(stack_t** stackp)
+{
+	string_t *d;
+	d = pop(stackp);
+	d->dnumber = -(d->dnumber);
+	push(stackp, d);
+}
+
+//Negate int on TOS.
+void command_INEG(stack_t** stackp)
+{
+	string_t *i;
+	i = pop(stackp);
+	i->inumber = -(i->inumber);
+	push(stackp, i);
+}
+
+//Pop and print integer TOS.
+void command_IPRINT(stack_t** stackp)
+{
+	printf("%d\n", pop(stackp)->inumber);
+}
+
+//Pop and print double TOS.
+void command_DPRINT(stack_t** stackp)
+{
+	printf("%f\n", pop(stackp)->dnumber);
+}
+
+//Pop and print string TOS.
+void command_SPRINT(stack_t** stackp)
+{
+	printf("%s\n", *(pop(stackp)->str));
+}
+
+//Convert int on TOS to double.
+void command_I2D(stack_t** stackp)
+{
+	string_t* i = pop(stackp);
+	i->dnumber = (double)(i->inumber);
+	push(stackp, i);
+}
+
+//Convert double on TOS to int.
+void command_D2I(stack_t** stackp)
+{
+	string_t* d = pop(stackp);
+	d->inumber = (int)(d->dnumber);
+	push(stackp, d);
+}
+
+//Convert string on TOS to int.
+void command_S2I(stack_t** stackp)
+{
+	string_t* ch = pop(stackp);
+	//I don't know, what this command should do.
+}
+
+//Swap 2 topmost values.
+void command_SWAP(stack_t** stackp)
+{
+	string_t *first , *second;
+	first = pop(stackp);
+	second = pop(stackp);
+	push(stackp, second);
+	push(stackp, first);
+}
+
+//Remove topmost value.
+void command_POP(stack_t** stackp)
+{
+	pop(stackp);
+}
+
+/*	Commands, that can works woth variables.	*/
+
+//Compare 2 topmost doubles, pushing libc-stryle comparator value cmp(upper, lower) as integer.
+void command_DCMP(stack_t** stackp)
+{
+	string_t *d1, *d2, *value;
+	d1 = pop(stackp);
+	d2 = pop(stackp);
+	push(stackp, d2);
+	push(stackp, d1);
+	value = (string_t*)malloc(sizeof(string_t));
+	if (d1 > d2) value->inumber = 1;
+	else if (d2 > d1) value->inumber = -1;
+	else value->inumber = 0;
+	push(stackp, value);
+}
+
+//Compare 2 topmost ints, pushing libc-style comparator value cmp(upper, lower) as integer.
+void command_ICMP(stack_t** stackp)
+{
+	string_t *i1, *i2, *value;
+	i1 = pop(stackp);
+	i2 = pop(stackp);
+	push(stackp, i2);
+	push(stackp, i1);
+	value = (string_t*)malloc(sizeof(string_t));
+	if (i1 > i2) value->inumber = 1;
+	else if (i2 > i1) value->inumber = -1;
+	else value->inumber = 0;
+	push(stackp, value);
+}
+
+/*	Commands, that can compare and jump.	*/
+
+//Dump value on TOS, without removing it.
+void command_DUMP(stack_t** stackp)
+{
+	string_t* value = pop(stackp);
+	push(stackp, value);
+	printf("Int %d\nDouble %f\nString %s\n", pop(stackp)->inumber, pop(stackp)->dnumber, *(pop(stackp)->str));
+}
+
+//Stop execution.
+void command_STOP()
+{
+	fputs("Execution was stopped by command!", stderr);
+	exit(6109);
+}
+
+/*	Commands, that can call functions and return from them.	*/
+/*	Command, that can debug it.	*/
