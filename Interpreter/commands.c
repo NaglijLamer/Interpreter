@@ -252,7 +252,8 @@ void command_D2I(stack_t** stackp)
 void command_S2I(stack_t** stackp)
 {
 	string_t* ch = pop(stackp);
-	//I don't know, what this command should do.
+	ch->inumber = atoi(ch->str);
+	push(stackp, ch);
 }
 
 //Swap 2 topmost values.
@@ -310,7 +311,7 @@ void command_DUMP(stack_t** stackp)
 {
 	string_t* value = pop(stackp);
 	push(stackp, value);
-	printf("Int %d\nDouble %f\nString %s\n", pop(stackp)->inumber, pop(stackp)->dnumber, *(pop(stackp)->str));
+	printf("Int %d\nDouble %f\nString %s\n", value->inumber, value->dnumber, *(value->str));
 }
 
 //Stop execution.
