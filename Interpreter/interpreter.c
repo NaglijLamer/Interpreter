@@ -3,54 +3,284 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "interpreter.h"
+#include "instant_exit.h"
 #define true 1
+#define zero_offset -1
+#define start_size 100
 
-
-//Push element on TOS.
-void push(stack_t** stackp, string_t* value)
+void interpreter(char* byte_code, int entry_point_id)
 {
-	stack_t* elem = (stack_t*)malloc(sizeof(stack_t));
-	if (elem == NULL)
-	{
-		fputs("Error! Stack overflow", stderr);
-		exit(2); 
-	}
-	elem->value = value;
-	if (stackp != NULL) elem->next = *stackp;
-	else elem->next = NULL;
-	*stackp = elem;
+	current_stack_t stack;
+	stack.offset = zero_offset;
+	stack.size_of_stack = start_size;
+
+
+	stack.bottom = (stack_t*)malloc(sizeof(stack_t) * stack.size_of_stack);
+
+
+	//VERY BIG SWITCH! VERY. BIG.
 }
 
-//Pop element from TOS.
-string_t* pop(stack_t** stackp)
+void stack_realloc(current_stack_t* stack)
 {
-	stack_t* TOS;
-	string_t* TOS_value;
-	if (*stackp == NULL)
-	{
-		fputs("Error! Stack is empty!", stderr);
-		exit(2);
-	}
-	TOS = *stackp;
-	TOS_value = TOS->value;
-	*stackp = (*stackp)->next;
-	free(TOS);
-	return TOS_value;
+	stack->size_of_stack << 2;
+	stack->bottom = (stack_t*)realloc(stack->bottom, stack->size_of_stack);
+	if (stack->bottom == NULL) interpret_crash(stck_overflow);
 }
 
-//Peek element number n from stack. O(n). TOP is the zero element.
-string_t* peek(stack_t** stackp, int n)
+//Invalid instruction.
+void command_INVALID()
 {
-	stack_t* current_element = *stackp;
-	while (true)
-	{
-		if (current_element == NULL)
-			{
-				fputs("Error! Stack is empty!", stderr);
-				exit(2);
-			}
-		if (n == 0) return current_element->value;
-		n--;
-		current_element = current_element->next;
-	}
+	interpret_crash(inval_instr);
 }
+
+//Load double on TOS, inlined into insn stream.
+void command_DLOAD(current_stack_t* stack, double d)
+{
+	if (stack->offset + 1 >= stack->size_of_stack) stack_realloc(stack);
+	stack->offset++;
+	(stack->offset + stack->bottom)->dnumber = d;
+}
+
+//Load int on TOS, inlined into insn stream.
+void command_ILOAD(current_stack_t* stack, int i)
+{
+	if (stack->offset + 1 >= stack->size_of_stack) stack_realloc(stack);
+	stack->offset++;
+	(stack->offset + stack->bottom)->inumber = i;
+}
+
+//Load string reference on TOS, next two bytes - constant id.
+void command_SLOAD(current_stack_t* stack, char* s)
+{
+	if (stack->offset + 1 >= stack->size_of_stack) stack_realloc(stack);
+	stack->offset++;
+	(stack->offset + stack->bottom)->str = s;
+}
+
+//Load double 0 on TOS.
+void command_DLOAD0(current_stack_t* stack)
+{
+	command_DLOAD(stack, 0.0);
+}
+
+//Load int 0 on TOS.
+void command_ILOAD0(current_stack_t* stack)
+{
+	command_ILOAD(stack, 0);
+}
+
+//Load empty string on TOS.
+/* !!! Empty string?? !!! */
+void command_SLOAD0(current_stack_t* stack)
+{
+	command_SLOAD(stack, NULL);
+}
+
+//Load double 1 on TOS.
+void command_DLOAD1(current_stack_t* stack)
+{
+	command_DLOAD(stack, 1.0);
+}
+
+//Load int 1 on TOS.
+void command_ILOAD1(current_stack_t* stack)
+{
+	command_ILOAD(stack, 1);
+}
+
+//Load double -1 on TOS.
+void command_DLOADM1(current_stack_t* stack)
+{
+	command_DLOAD(stack, -1.0);
+}
+
+//Load int -1 on TOS.
+void command_ILOADM1(current_stack_t* stack)
+{
+	command_ILOAD(stack, -1);
+}
+
+//Add 2 doubles on TOS, push value back.
+void command_DADD(current_stack_t* stack)
+{
+	if (stack->offset - 2 < zero_offset) interpret_crash(stck_empt);
+	stack->offset--;
+	(stack->bottom + stack->offset)->dnumber += (stack->bottom + stack->offset + 1)->dnumber;
+}
+
+//Add 2 ints on TOS, push value back.
+void command_IADD(current_stack_t* stack)
+{
+	if (stack->offset - 2 < zero_offset) interpret_crash(stck_empt);
+	stack->offset--;
+	(stack->bottom + stack->offset)->inumber += (stack->bottom + stack->offset + 1)->inumber;
+}
+
+//Subtract 2 doubles on TOS (lower from upper), push value back.
+void command_DSUB(current_stack_t* stack)
+{
+	if (stack->offset - 2 < zero_offset) interpret_crash(stck_empt);
+	stack->offset--;
+	(stack->bottom + stack->offset)->dnumber = (stack->bottom + stack->offset + 1)->dnumber - (stack->bottom + stack->offset)->dnumber;
+}
+
+//Subtract 2 ints on TOS (lower from upper), push value back.
+void command_ISUB(current_stack_t* stack)
+{
+	if (stack->offset - 2 < zero_offset) interpret_crash(stck_empt);
+	stack->offset--;
+	(stack->bottom + stack->offset)->inumber = (stack->bottom + stack->offset + 1)->inumber - (stack->bottom + stack->offset)->inumber;
+}
+
+//Multiply 2 doubles on TOS, push value back.
+void command_DMUL(current_stack_t* stack)
+{
+	if (stack->offset - 2 < zero_offset) interpret_crash(stck_empt);
+	stack->offset--;
+	(stack->bottom + stack->offset)->dnumber *= (stack->bottom + stack->offset + 1)->dnumber;
+}
+
+//Multiply 2 ints on TOS, push value back.
+void command_IMUL(current_stack_t* stack)
+{
+	if (stack->offset - 2 < zero_offset) interpret_crash(stck_empt);
+	stack->offset--;
+	(stack->bottom + stack->offset)->inumber *= (stack->bottom + stack->offset + 1)->inumber;
+}
+
+//Divide 2 doubles on TOS (upper to lower), push value back.
+void command_DDIV(current_stack_t* stack)
+{
+	if (stack->offset - 2 < zero_offset) interpret_crash(stck_empt);
+	stack->offset--;
+	(stack->bottom + stack->offset)->dnumber = (stack->bottom + stack->offset + 1)->dnumber / (stack->bottom + stack->offset)->dnumber;
+}
+
+//Divide 2 ints on TOS (upper to lower), push value back.
+void command_IDIV(current_stack_t* stack)
+{
+	if (stack->offset - 2 < zero_offset) interpret_crash(stck_empt);
+	stack->offset--;
+	(stack->bottom + stack->offset)->inumber = (stack->bottom + stack->offset + 1)->inumber / (stack->bottom + stack->offset)->inumber;
+}
+
+//Modulo operation on 2 ints on TOS (upper to lower), push value back.
+void command_IMOD(current_stack_t* stack)
+{
+	if (stack->offset - 2 < zero_offset) interpret_crash(stck_empt);
+	stack->offset--;
+	(stack->bottom + stack->offset)->inumber = (stack->bottom + stack->offset + 1)->inumber % (stack->bottom + stack->offset)->inumber;
+}
+
+//Negate double on TOS.
+void command_DNEG(current_stack_t* stack)
+{
+	if (stack->offset <= zero_offset) interpret_crash(stck_empt);
+	(stack->bottom + stack->offset)->dnumber = -((stack->bottom + stack->offset)->dnumber);
+}
+
+//Negate int on TOS.
+void command_INEG(current_stack_t* stack)
+{
+	if (stack->offset <= zero_offset) interpret_crash(stck_empt);
+	(stack->bottom + stack->offset)->inumber = -((stack->bottom + stack->offset)->inumber);
+}
+
+//Pop and print integer TOS.
+void command_IPRINT(current_stack_t* stack)
+{
+	if (stack->offset <= zero_offset) interpret_crash(stck_empt);
+	printf("%d\n", (stack->bottom + stack->offset)->inumber);
+}
+
+//Pop and print double TOS.
+void command_DPRINT(current_stack_t* stack)
+{
+	if (stack->offset <= zero_offset) interpret_crash(stck_empt);
+	printf("%f\n", (stack->bottom + stack->offset)->dnumber);
+}
+
+//Pop and print string TOS.
+void command_SPRINT(current_stack_t* stack)
+{
+	if (stack->offset <= zero_offset) interpret_crash(stck_empt);
+	printf("%s\n", *((stack->bottom + stack->offset)->str));
+}
+
+//Convert int on TOS to double.
+void command_I2D(current_stack_t* stack)
+{
+	if (stack->offset <= zero_offset) interpret_crash(stck_empt);	
+	(stack->bottom + stack->offset)->dnumber = (double)((stack->bottom + stack->offset)->inumber);
+}
+
+//Convert double on TOS to int.
+void command_D2I(current_stack_t* stack)
+{
+	if (stack->offset <= zero_offset) interpret_crash(stck_empt);	
+	(stack->bottom + stack->offset)->inumber = (int)((stack->bottom + stack->offset)->dnumber);
+}
+
+//Convert string on TOS to int.
+void command_S2I(current_stack_t* stack)
+{
+	if (stack->offset <= zero_offset) interpret_crash(stck_empt);
+	(stack->bottom + stack->offset)->inumber = atoi((stack->bottom + stack->offset)->str);
+}
+
+//Swap 2 topmost values.
+void command_SWAP(current_stack_t* stack)
+{
+	stack_t top;
+	if (stack->offset - 2 <= zero_offset) interpret_crash(stck_empt);
+	top = *(stack->bottom + stack->offset);
+	*(stack->bottom + stack->offset) = *(stack->bottom + stack->offset - 1);
+	*(stack->bottom + stack->offset - 1) = top;
+}
+
+//Remove topmost value.
+void command_POP(current_stack_t* stack)
+{
+	if (stack->offset <= zero_offset) interpret_crash(stck_empt);
+	stack->offset--;
+}
+
+/*	Commands, that can works woth variables.	*/
+
+//Compare 2 topmost doubles, pushing libc-stryle comparator value cmp(upper, lower) as integer.
+void command_DCMP(current_stack_t* stack)
+{
+	if (stack->offset - 2 <= zero_offset) interpret_crash(stck_empt);
+	if ((stack->bottom + stack->offset - 1)->dnumber > (stack->bottom + stack->offset - 2)->dnumber) command_DLOAD1(stack);
+	else if ((stack->bottom + stack->offset - 1)->dnumber < (stack->bottom + stack->offset - 2)->dnumber) command_DLOADM1(stack);
+	else command_DLOAD0(stack);
+}
+
+//Compare 2 topmost ints, pushing libc-style comparator value cmp(upper, lower) as integer.
+void command_ICMP(current_stack_t* stack)
+{
+	if (stack->offset - 2 <= zero_offset) interpret_crash(stck_empt);
+	if ((stack->bottom + stack->offset - 1)->inumber > (stack->bottom + stack->offset - 2)->inumber) command_ILOAD1(stack);
+	else if ((stack->bottom + stack->offset - 1)->inumber < (stack->bottom + stack->offset - 2)->inumber) command_ILOADM1(stack);
+	else command_ILOAD0(stack);
+}
+
+/*	Commands, that can compare and jump.	*/
+
+//Dump value on TOS, without removing it.
+void command_DUMP(current_stack_t* stack)
+{
+	if (!(stack->offset <= zero_offset)) 
+		printf("Int %d\nDouble %f\nString %s\n", (stack->bottom + stack->offset)->inumber, 
+		(stack->bottom + stack->offset)->dnumber, *((stack->bottom + stack->offset)->str));
+}
+
+//Stop execution.
+void command_STOP()
+{
+	interpret_crash(stp_commnd);
+}
+
+/*	Commands, that can call functions and return from them.	*/
+/*	Command, that can debug it.	*/

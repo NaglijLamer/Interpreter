@@ -81,14 +81,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="commands.c" />
     <ClCompile Include="file_read.c" />
+    <ClCompile Include="instant_exit.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="interpreter.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="commands.h" />
     <ClInclude Include="file_read.h" />
+    <ClInclude Include="instant_exit.h" />
     <ClInclude Include="interpreter.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

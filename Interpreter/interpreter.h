@@ -5,15 +5,11 @@ typedef union
 	long long inumber;
 	double dnumber;
 	char* str;
-}string_t;
+}stack_t;
 
-typedef struct stack_t stack_t;
-struct stack_t
+typedef struct
 {
-	string_t* value;
-	stack_t* next;
-};
-
-void push(stack_t** stackp, string_t* value);
-string_t* pop(stack_t** stackp);
-string_t* peek(stack_t** stackp, int n);
+	stack_t* bottom;
+	size_t offset;
+	size_t size_of_stack;
+}current_stack_t;
