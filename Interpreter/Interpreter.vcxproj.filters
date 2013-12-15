@@ -24,12 +24,18 @@
     <ClCompile Include="commands.c">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
+    <ClCompile Include="file_read.c">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="interpreter.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
     <ClInclude Include="commands.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="file_read.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
   </ItemGroup>

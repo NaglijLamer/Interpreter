@@ -16,3 +16,4 @@ struct stack_t
 
 void push(stack_t** stackp, string_t* value);
 string_t* pop(stack_t** stackp);
+string_t* peek(stack_t** stackp, int n);

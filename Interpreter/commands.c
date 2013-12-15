@@ -278,10 +278,8 @@ void command_POP(stack_t** stackp)
 void command_DCMP(stack_t** stackp)
 {
 	string_t *d1, *d2, *value;
-	d1 = pop(stackp);
-	d2 = pop(stackp);
-	push(stackp, d2);
-	push(stackp, d1);
+	d1 = peek(stackp, 0);
+	d2 = peek(stackp, 1);
 	value = (string_t*)malloc(sizeof(string_t));
 	if (d1 > d2) value->inumber = 1;
 	else if (d2 > d1) value->inumber = -1;
@@ -293,10 +291,8 @@ void command_DCMP(stack_t** stackp)
 void command_ICMP(stack_t** stackp)
 {
 	string_t *i1, *i2, *value;
-	i1 = pop(stackp);
-	i2 = pop(stackp);
-	push(stackp, i2);
-	push(stackp, i1);
+	i1 = peek(stackp, 0);
+	i2 = peek(stackp, 1);
 	value = (string_t*)malloc(sizeof(string_t));
 	if (i1 > i2) value->inumber = 1;
 	else if (i2 > i1) value->inumber = -1;
@@ -309,8 +305,7 @@ void command_ICMP(stack_t** stackp)
 //Dump value on TOS, without removing it.
 void command_DUMP(stack_t** stackp)
 {
-	string_t* value = pop(stackp);
-	push(stackp, value);
+	string_t* value = peek(stackp, 0);
 	printf("Int %d\nDouble %f\nString %s\n", value->inumber, value->dnumber, *(value->str));
 }
 

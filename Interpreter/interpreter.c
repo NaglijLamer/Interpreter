@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "interpreter.h"
+#define true 1
 
 
 //Push element on TOS.
@@ -35,4 +36,21 @@ string_t* pop(stack_t** stackp)
 	*stackp = (*stackp)->next;
 	free(TOS);
 	return TOS_value;
+}
+
+//Peek element number n from stack. O(n). TOP is the zero element.
+string_t* peek(stack_t** stackp, int n)
+{
+	stack_t* current_element = *stackp;
+	while (true)
+	{
+		if (current_element == NULL)
+			{
+				fputs("Error! Stack is empty!", stderr);
+				exit(2);
+			}
+		if (n == 0) return current_element->value;
+		n--;
+		current_element = current_element->next;
+	}
 }

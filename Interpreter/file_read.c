@@ -1,0 +1,1 @@
+//File with functions that can read file with byte-code. And create a massive from byte-code functions.
