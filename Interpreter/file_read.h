@@ -1,16 +1,23 @@
 
 
+typedef char* function;
+typedef function* functions;
+typedef unsigned int uint;
+
 typedef struct{
-	unsigned int signature;
-	double version;
-	unsigned int constants;
-	unsigned int size_of_file;
-	unsigned int entry_point_id;
-	unsigned int functions;
+	uint signature;
+	uint main_version;
+	char* dot;
+	uint second_version;
+	uint constants;
+	uint size_of_file;
+	uint entry_point_id;
+	uint functions;
 }file_header;
 
 typedef struct{
-	unsigned int size;
-	unsigned int size_of_byte-code;
+	uint size;
+	uint size_of_byte_code;
 	//some question about function format...
-}function;
+}function_header;
+

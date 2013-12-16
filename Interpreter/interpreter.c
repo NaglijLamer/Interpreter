@@ -4,29 +4,54 @@
 #include <stdlib.h>
 #include "interpreter.h"
 #include "instant_exit.h"
+#include "file_read.h"
 #define true 1
 #define zero_offset -1
 #define start_size 100
 
-void interpreter(char* byte_code, int entry_point_id)
+//Interpeter body. Really.
+error_codes interpreter(functions byte_code, uint entry_point_id, uint size_of_byte_code)
 {
-	current_stack_t stack;
-	stack.offset = zero_offset;
-	stack.size_of_stack = start_size;
+	//Initialization of stack size.
+	current_stack_t* stack;
+	stack->offset = zero_offset;
+	stack->size_of_stack = start_size;
+	char nextbyte;
+	//Instruction pointer
+	uint ip = 0;
+	uint current_id = entry_point_id;
+	function current_function = *(byte_code + current_id);
+	//Here we must create constant pull - an array with constants, where number of element is a constant id.
 
+	//Initialization of stack.
+	stack->bottom = (stack_t*)malloc(sizeof(stack_t) * stack->size_of_stack);
 
-	stack.bottom = (stack_t*)malloc(sizeof(stack_t) * stack.size_of_stack);
-
-
+	nextbyte = *(current_function+ ip);
 	//VERY BIG SWITCH! VERY. BIG.
+	while (true)
+	{
+		switch(nextbyte)
+		{
+			case INVALID: command_INVALID(); break;
+			case ILOAD: command_ILOAD(stack, ++nextbyte); break;
+			case IADD: command_IADD(stack); break;
+			case IPRINT: command_IPRINT(stack); break;
+			case STOP: return stp_commnd;
+		}
+		nextbyte++;
+	}
 }
 
+//Increasing of stack size.
 void stack_realloc(current_stack_t* stack)
 {
 	stack->size_of_stack << 2;
 	stack->bottom = (stack_t*)realloc(stack->bottom, stack->size_of_stack);
 	if (stack->bottom == NULL) interpret_crash(stck_overflow);
 }
+
+
+/*Instructions.*/
 
 //Invalid instruction.
 void command_INVALID()
