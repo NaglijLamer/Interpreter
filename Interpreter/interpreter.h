@@ -1,4 +1,8 @@
 
+#include "instant_exit.h"
+#include "file_read.h"
+
+int interpreter(functions byte_code, uint entry_point_id, uint size_of_byte_code);
 
 //Element in stack.
 typedef union 
@@ -39,6 +43,3 @@ typedef enum
 	CALL = 0x4D, CALLNATIVE, RETURN,
 	BREAK = 0x50,
 }commands;
-
-
-error_codes interpreter(functions byte_code, uint entry_point_id, uint size_of_byte_code);

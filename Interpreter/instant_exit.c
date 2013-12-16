@@ -7,7 +7,6 @@
 //Crash program, if we habe troubles with stack.
 void interpret_crash(int error_code)
 {
-	//I need error_enum. Really,
 	switch(error_code)
 	{
 		case inval_instr: fputs("Error! Invalid instruction.", stderr); break;
