@@ -33,7 +33,7 @@ void static command_DLOAD(current_stack_t* stack, double d)
 }
 
 //Load int on TOS, inlined into insn stream.
-void static command_ILOAD(current_stack_t* stack, int i)
+void static command_ILOAD(current_stack_t* stack, long long i)
 {
 	if (stack->offset + 1 >= stack->size_of_stack) stack_realloc(stack);
 	stack->offset++;
@@ -299,8 +299,13 @@ int interpreter(functions byte_code, uint entry_point_id, uint size_of_byte_code
 		switch(nextbyte)
 		{
 			case INVALID: command_INVALID(); break;
-				//Fix it as 8-bytes integer. Not 1-byte char.
-			case ILOAD: nextbyte = *(current_function + (++ip)); command_ILOAD(&stack, nextbyte); break;
+			case ILOAD: 
+				{
+					command_ILOAD(&stack, *((long long*)(current_function + (++ip)))); 
+					ip += 7;
+					nextbyte = *(current_function + ip); 
+					break;
+				}
 			case IADD: command_IADD(&stack); break;
 			case IPRINT: command_IPRINT(&stack); break;
 			case STOP: return stp_commnd;
