@@ -18,13 +18,14 @@ typedef struct
 	stack_t* bottom;
 	size_t offset;
 	size_t size_of_stack;
-}current_stack_t;
+	function ip;
+}pointers;
 
 //Codes and commands comparison.
 typedef enum
 {
 	INVALID = 0x00,
-	DLOAD = 0x01, ILOAD, SLOAD, DLOAD0, ILOAD0, SLOAD0, DLOAD1, ILOAD1, DLOADM1, ILOADm1,
+	DLOAD = 0x01, ILOAD, SLOAD, DLOAD0, ILOAD0, SLOAD0, DLOAD1, ILOAD1, DLOADM1, ILOADM1,
 	DADD = 0x0B, IADD, DSUB, ISUB, DMUL, IMUL, DDIV, IDIV, IMOD, DNEG, INEG,
 	IPRINT = 0x16, DPRINT, SPRINT, 
 	I2D = 0x19, D2I, S2I,

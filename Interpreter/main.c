@@ -27,7 +27,7 @@ int main(int argc, char** argv)
 	fwrite(ch, sizeof(char), 1, file);
 	fclose(file);*/
 	
-	/*//Reading this file and interprete.
+	//Reading this file and interprete.
 	FILE* file;
 	int n;
 	function f;
@@ -38,7 +38,7 @@ int main(int argc, char** argv)
 	n = fread(f, sizeof(char), 21, file);
 	fclose(file);
 	fs = (functions)f;
-	interpreter(fs, 0, 21);*/
+	interpreter(fs, 0, 21);
 	
 
 	return EXIT_SUCCESS;
