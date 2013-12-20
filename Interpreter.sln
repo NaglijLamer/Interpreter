@@ -6,16 +6,25 @@ EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
+		Debug|x64 = Debug|x64
 		High Optimization|Win32 = High Optimization|Win32
+		High Optimization|x64 = High Optimization|x64
 		Release|Win32 = Release|Win32
+		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{51C521DB-3584-45D6-84D7-D993F56E1FF5}.Debug|Win32.ActiveCfg = Debug|Win32
 		{51C521DB-3584-45D6-84D7-D993F56E1FF5}.Debug|Win32.Build.0 = Debug|Win32
+		{51C521DB-3584-45D6-84D7-D993F56E1FF5}.Debug|x64.ActiveCfg = Debug|x64
+		{51C521DB-3584-45D6-84D7-D993F56E1FF5}.Debug|x64.Build.0 = Debug|x64
 		{51C521DB-3584-45D6-84D7-D993F56E1FF5}.High Optimization|Win32.ActiveCfg = High Optimization|Win32
 		{51C521DB-3584-45D6-84D7-D993F56E1FF5}.High Optimization|Win32.Build.0 = High Optimization|Win32
+		{51C521DB-3584-45D6-84D7-D993F56E1FF5}.High Optimization|x64.ActiveCfg = High Optimization|x64
+		{51C521DB-3584-45D6-84D7-D993F56E1FF5}.High Optimization|x64.Build.0 = High Optimization|x64
 		{51C521DB-3584-45D6-84D7-D993F56E1FF5}.Release|Win32.ActiveCfg = Release|Win32
 		{51C521DB-3584-45D6-84D7-D993F56E1FF5}.Release|Win32.Build.0 = Release|Win32
+		{51C521DB-3584-45D6-84D7-D993F56E1FF5}.Release|x64.ActiveCfg = Release|x64
+		{51C521DB-3584-45D6-84D7-D993F56E1FF5}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -75,7 +75,6 @@
         DO(IFICMPL, 3)		\
         DO(IFICMPLE, 3)		\
         DO(DUMP, 1)			\
-        DO(STOP, 1)         \
         DO(CALL, 3)			\
         DO(CALLNATIVE, 3)	\
         DO(RETURN, 1)		\

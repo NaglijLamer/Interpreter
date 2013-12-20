@@ -2,24 +2,23 @@
 #include "instant_exit.h"
 #include "file_read.h"
 
-int interpreter(functions byte_code, uint entry_point_id, uint size_of_byte_code);
-
 //Element in stack.
 typedef union 
 {
 	long long inumber;
 	double dnumber;
-	char* str;
+	long long str_id;
 }stack_t;
 
 //Stack.
 typedef struct
 {
-	stack_t* bottom;
-	size_t offset;
-	size_t size_of_stack;
-	function ip;
-}pointers;
+	stack_t* bottom;	//Bottom of stack,
+	stack_t* sp;		//Stack Pointer.
+	stack_t* head;		//= bottom + head = maxSP.
+	function ip;		//Instruction Pointer.
+						//May be a pointer for a constant pool.
+}registers;
 
 //Codes and commands comparison.
 typedef enum
@@ -44,3 +43,6 @@ typedef enum
 	CALL = 0x4D, CALLNATIVE, RETURN,
 	BREAK = 0x50,
 }commands;
+
+int interpreter(functions byte_code, uint entry_point_id, uint size_of_byte_code);
+void stack_destruction(registers* pointers);

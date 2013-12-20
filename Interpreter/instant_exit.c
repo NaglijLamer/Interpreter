@@ -16,5 +16,6 @@ void interpret_crash(int error_code)
 
 		case stp_commnd: fputs("Execution was stopped by command!", stderr); break;
 	}
+	
 	exit(error_code);
 }
