@@ -12,18 +12,21 @@ typedef union
 	long long str_id;
 }stack_t;
 
-//Stack.
+//Stack of calculations, pointer to the pool of constant, instruction pointer.
 typedef struct
 {
-	stack_t* bottom;	//Bottom of stack,
-	stack_t* sp;		//Stack Pointer.
-	stack_t* head;		//= bottom + head = maxSP.
-	function ip;		//Instruction Pointer.
-	char** pool;		//May be a pointer for a constant pool.
+	stack_t* bottom;		//Bottom of stack,
+	stack_t* sp;			//Stack Pointer.
+	stack_t* head;			//= bottom + head = maxSP.
+	function ip;			//Instruction Pointer.
+	function byte_code;		//Pointer to the byte_code.
+	char** pool;			//May be a pointer for a constant pool.
+	function_table* table;	//Comparison of function ids and offsets.
+	uint count_of_functions;
 }registers;
 
-int interpreter(functions byte_code, uint entry_point_id, uint size_of_byte_code, char** pool);
+int interpreter(registers pointers);
 void static stack_realloc(registers* pointers);
-void stack_destruction(registers* pointers);
+void registers_destruction(registers* pointers);
 
 #endif

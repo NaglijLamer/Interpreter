@@ -7,7 +7,7 @@ typedef enum
 	inval_instr = 1,
 	stck_overflow,
 	stck_empt,
-
+	wrng_file,
 
 	stp_commnd = 6109,
 }error_codes;
