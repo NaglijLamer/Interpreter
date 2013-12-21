@@ -1,16 +1,9 @@
 #ifndef PARSER_H_
 #define PARSER_H_
 
+#include "interpreter.h"
 
-typedef char* function;
-//typedef function* functions;
-typedef unsigned int uint;
-typedef unsigned short ushort;
-
-typedef struct{
-	short id;
-	function offset;
-}function_table;
+registers parser_file(FILE* program);
 
 typedef struct{
 	ushort signature;
@@ -29,7 +22,5 @@ typedef struct{
 	ushort size_of_arguments;
 	ushort size_of_locals;
 }function_header;
-
-registers parser(FILE* program);
 
 #endif

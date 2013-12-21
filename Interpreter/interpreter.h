@@ -2,7 +2,6 @@
 #define INTERPRETER_H_
 
 #include "instant_exit.h"
-#include "parser.h"
 
 //Element in stack.
 typedef union 
@@ -11,6 +10,16 @@ typedef union
 	double dnumber;
 	long long str_id;
 }stack_t;
+
+typedef char* function;
+//typedef function* functions;
+typedef unsigned int uint;
+typedef unsigned short ushort;
+
+typedef struct{
+	short id;
+	function offset;
+}function_table;
 
 //Stack of calculations, pointer to the pool of constant, instruction pointer.
 typedef struct

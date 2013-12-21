@@ -1,5 +1,9 @@
 //File with functions that can read file with byte-code. And create a massive from byte-code functions.
 
+#ifdef _MSC_VER
+#define _CRT_SECURE_NO_WARNINGS
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -8,15 +12,15 @@
 #include "instant_exit.h"
 #include "constant_pool.h"
 
-registers parser(FILE* program)
+registers parser_file(FILE* program)
 {
 	registers* pointers;
 	file_header* fh;
 	function_header* mh;
 	char *string_buffer, *substring, *function_buffer;
 	size_t size;
-	function byte_code;
 	int current_offset = 0;
+	uint i;
 
 	//Reading of file-header.
 	fh = (file_header*)malloc(sizeof(file_header));
@@ -32,7 +36,7 @@ registers parser(FILE* program)
 		size = fread(string_buffer, sizeof(string_buffer), 1, program);
 		if (sizeof(string_buffer) != size) interpret_crash(wrng_file);
 		substring = strtok(string_buffer, '\0');
-		for (int i = 1; i <= fh->count_constant; i++)
+		for (i = 1; i <= fh->count_constant; i++)
 		{			
 			add_const(i, pointers->pool, substring); 
 			if (i < fh->count_constant) substring = strtok(NULL, '\0');
@@ -44,7 +48,7 @@ registers parser(FILE* program)
 	pointers->table = (function_table*)malloc(sizeof(function_table) * fh->count_function);
 	mh = (function_header*)malloc(sizeof(function_header));
 	pointers->byte_code = (function)malloc(fh->size_of_file - fh->size_of_constant - sizeof(file_header) - sizeof(function_header) * fh->count_function);
-	for (int i = 0; i < fh->count_function; i++)
+	for (i = 0; i < fh->count_function; i++)
 	{
 		size = fread(mh, sizeof(function_header), 1, program);
 		if (sizeof(function_header) != size) interpret_crash(wrng_file);
