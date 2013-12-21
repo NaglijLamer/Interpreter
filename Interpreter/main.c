@@ -58,7 +58,7 @@ int main(int argc, char** argv)
 	n = fread(f, sizeof(char), TOTAL, file);
 	fclose(file);
 	fs = (functions)f;
-	interpreter(fs, 0, TOTAL);*/
+	interpreter(fs, 0, TOTAL, NULL);*/
 	
 	return EXIT_SUCCESS;
 }

@@ -3,7 +3,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "interpreter.h"
-#include "for_byte-codes.h"
+#include "commands.h"
+#include "constant_pool.h"
 
 #ifdef _MSC_VER
 #define INLINE __forceinline
@@ -78,12 +79,11 @@ void static INLINE command_ILOAD0(registers* pointers)
 }
 
 //Load empty string on TOS.
-/* !!! Empty string?? !!! */
 void static INLINE command_SLOAD0(registers* pointers)
 {
 	if (pointers->sp >= pointers->head) stack_realloc(pointers);
 	pointers->sp++;
-	//(pointers->sp)->str = NULL;
+	(pointers->sp)->str_id = 0;
 }
 
 //Load double 1 on TOS.
@@ -222,8 +222,7 @@ void static INLINE command_DPRINT(registers* pointers)
 void static INLINE command_SPRINT(registers* pointers)
 {
 	if (pointers->sp < pointers->bottom) interpret_crash(stck_empt);
-	//Re-write with using pointer to constant pool.
-	//printf("%s\n", *((pointers->bottom + pointers->sp)->str));
+	printf("%s\n",  get_const((short)((pointers->sp)->str_id), pointers->pool));
 }
 
 //Convert int on TOS to double.
@@ -244,8 +243,7 @@ void static INLINE command_D2I(registers* pointers)
 void static INLINE command_S2I(registers* pointers)
 {
 	if (pointers->sp < pointers->bottom) interpret_crash(stck_empt);
-	//Re-write with using pointer to constant pool.
-	//(pointers->bottom + pointers->sp)->inumber = atoi((pointers->bottom + pointers->sp)->str);
+	(pointers->sp)->inumber = atoi(get_const((short)((pointers->sp)->str_id), pointers->pool));
 }
 
 //Swap 2 topmost values.
@@ -554,19 +552,18 @@ void static INLINE command_BREAK(registers* pointers)
 
 /*End of Instructions*/
 
+
 //Interpeter body. Really.
-int interpreter(functions byte_code, uint entry_point_id, uint size_of_byte_code)
+int interpreter(functions byte_code, uint entry_point_id, uint size_of_byte_code, char** pool)
 {
-	//Instruction pointer
-	uint current_id = entry_point_id;
-	//Initialization of pointers size.
+	//Initialization of pointers.
+	//Possibly - initialization in another function. Possibly - in parser. But with functions in another file.
 	registers pointers;
 	pointers.bottom = (stack_t*)malloc(sizeof(stack_t) * START_SIZE);
 	pointers.head = pointers.bottom + START_SIZE;
 	pointers.sp = pointers.bottom + ZERO_OFFSET;
-	pointers.ip = (function)(byte_code + current_id);
-	//Here we must create constant pull - an array with constants, where number of element is a constant id.
-
+	pointers.ip = (function)(byte_code + entry_point_id);
+	pointers.pool = pool;
 	//VERY BIG SWITCH! VERY. BIG.
 	while (TRUE)
 	{

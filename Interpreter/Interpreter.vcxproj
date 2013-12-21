@@ -169,7 +169,8 @@
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="file_read.c" />
+    <ClCompile Include="constant_pool.c" />
+    <ClCompile Include="parser.c" />
     <ClCompile Include="instant_exit.c">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Full</Optimization>
       <InlineFunctionExpansion Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AnySuitable</InlineFunctionExpansion>
@@ -180,8 +181,9 @@
     <ClCompile Include="interpreter.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="file_read.h" />
-    <ClInclude Include="for_byte-codes.h" />
+    <ClInclude Include="constant_pool.h" />
+    <ClInclude Include="parser.h" />
+    <ClInclude Include="commands.h" />
     <ClInclude Include="instant_exit.h" />
     <ClInclude Include="interpreter.h" />
   </ItemGroup>

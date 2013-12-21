@@ -1,4 +1,5 @@
-
+#ifndef EXIT_H_
+#define EXIT_H_
 
 //Codes of errors and their names comparision.
 typedef enum 
@@ -12,3 +13,5 @@ typedef enum
 }error_codes;
 
 void interpret_crash(int error_code);
+
+#endif
