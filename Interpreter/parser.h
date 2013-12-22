@@ -1,6 +1,7 @@
 #ifndef PARSER_H_
 #define PARSER_H_
 
+#pragma pack(1)
 #include "interpreter.h"
 
 registers parser_file(FILE* program);
@@ -11,7 +12,7 @@ typedef struct{
 	uint count_constant;
 	uint size_of_constant;
 	uint size_of_file;
-	uint entry_point_id;
+	ushort entry_point_id;
 	uint count_function;
 }file_header;
 

@@ -3,20 +3,47 @@
 #define _CRT_SECURE_NO_WARNINGS
 #endif
 
-#define TOTAL 37
 #include <stdlib.h>
 #include <stdio.h>
-#include "interpreter.h"
+#include "parser.h"
 
 int main(int argc, char** argv)
 {
 	/*//Creating file with byte-code for test.
 	FILE* file;
+	ushort* us = (ushort*)malloc(sizeof(ushort));
+	uint* ui = (uint*)malloc(sizeof(uint));
 	char* ch = (char*)malloc(sizeof(char));
 	long long* l = (long long*)malloc(sizeof(long long));
 	short* s = (short*)malloc(sizeof(short));
 	file = fopen("test", "wb");
-	//Program(0x02, (long long)4, 0x02, (long long)3, 0x02, (long long)5, 0x46, (short)4, 0x0E, 0x44, short(1), 0x0C, 0x16, 0x4C)
+	
+	*us = (ushort)0x4D56;
+	fwrite(us, sizeof(ushort), 1, file);
+	*us = (ushort)1;
+	fwrite(us, sizeof(ushort), 1, file);
+	*ui = (uint)0;
+	fwrite(ui, sizeof(uint), 1, file);
+	*ui = (uint)0;
+	fwrite(ui, sizeof(uint), 1, file);
+	*ui = (uint)73;
+	fwrite(ui, sizeof(uint), 1, file);
+	*us = (ushort)2;
+	fwrite(us, sizeof(ushort), 1, file);
+	*ui = (uint)1;
+	fwrite(ui, sizeof(uint), 1, file);
+
+	*us = (ushort)2;
+	fwrite(us, sizeof(ushort), 1, file);
+	*ui = (uint)51;
+	fwrite(ui, sizeof(uint), 1, file);
+	*ui = (uint)37;
+	fwrite(ui, sizeof(uint), 1, file);
+	*us = (ushort)0;
+	fwrite(us, sizeof(ushort), 1, file);
+	*us = (ushort)0;
+	fwrite(us, sizeof(ushort), 1, file);
+
 	*ch = (char)0x02;
 	fwrite(ch, sizeof(char), 1, file);
 	*l = (long long)4;
@@ -49,16 +76,8 @@ int main(int argc, char** argv)
 	
 	/*//Reading this file and interprete.
 	FILE* file;
-	int n;
-	function f;
-	functions fs;
 	file = fopen("test", "rb");
-	f = (function)malloc(sizeof(char) * TOTAL);
-	fs = (functions)malloc(sizeof(function));
-	n = fread(f, sizeof(char), TOTAL, file);
-	fclose(file);
-	fs = (functions)f;
-	interpreter(fs, 0, TOTAL, NULL);*/
+	interpreter(parser_file(file));*/
 	
 	return EXIT_SUCCESS;
 }
