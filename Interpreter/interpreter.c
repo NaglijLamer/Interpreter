@@ -60,6 +60,7 @@ void static INLINE command_SLOAD(registers* pointers)
 	if (pointers->sp >= pointers->head) stack_realloc(pointers);
 	pointers->sp++;
 	(pointers->sp)->str_id = *((short*)(++pointers->ip));
+	pointers->ip++;
 }
 
 //Load double 0 on TOS.
@@ -557,12 +558,9 @@ void static INLINE command_BREAK(registers* pointers)
 int interpreter(registers pointers)
 {
 	//Initialization of calculation stack.
-	//registers pointers;
 	pointers.bottom = (stack_t*)malloc(sizeof(stack_t) * START_SIZE);
 	pointers.head = pointers.bottom + START_SIZE;
 	pointers.sp = pointers.bottom + ZERO_OFFSET;
-	//pointers.ip = (function)(byte_code + entry_point_id);
-	//pointers.pool = pool;
 	//VERY BIG SWITCH! VERY. BIG.
 	while (TRUE)
 	{

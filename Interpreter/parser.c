@@ -14,12 +14,14 @@
 
 //Parser of file.
 //The constant '1' in the checking of read proccess must be... seeing better.
+//In the future we must create some registers for count of locals or arguments. Or. Add this information to the table of functions.
 registers parser_file(FILE* program)
 {
 	registers* pointers;
 	file_header* fh;
 	function_header* mh;
 	char *string_buffer, *substring;
+	char** buf;
 	size_t size;
 	int current_offset = 0;
 	uint i;
@@ -37,13 +39,13 @@ registers parser_file(FILE* program)
 	if (fh->count_constant != 0)
 	{
 		string_buffer = (char*)malloc(fh->size_of_constant);
-		size = fread(string_buffer, sizeof(string_buffer), 1, program);
+		size = fread(string_buffer, fh->size_of_constant, 1, program);
 		if (1 != size) interpret_crash(wrng_file);
-		substring = strtok(string_buffer, '\0');
+		substring = string_buffer;
 		for (i = 1; i <= fh->count_constant; i++)
 		{			
 			add_const(i, pointers->pool, substring); 
-			if (i < fh->count_constant) substring = strtok(NULL, '\0');
+			substring += strlen(substring) + 1;
 		}
 		free(string_buffer);
 	}
