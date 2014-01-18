@@ -8,6 +8,7 @@ typedef enum
 	stck_overflow,
 	stck_empt,
 	wrng_file,
+	ctx_empt,
 
 	stp_commnd = 6109,
 }error_codes;

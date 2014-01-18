@@ -536,31 +536,97 @@ void static INLINE command_STORESVAR(registers* pointers)
 //Load double from variable, whose 2-byte context and 2-byte id inlined to insn stream, push on TOS.
 void static INLINE command_LOADCTXDVAR(registers* pointers)
 {
+	int del;
+	function_table* func;
+	if (pointers->sp >= pointers->head) stack_realloc(pointers);
+	pointers->sp++;
+	func = get_function(pointers->table, *((ushort*)(++pointers->ip)), pointers->count_functions);
+	if (func == NULL || func->ctx_count == 0) interpret_crash(ctx_empt);
+	pointers->ip++;
+	if (func->id == pointers->current_function->id) del = 2;
+	else del = 1;
+	(pointers->sp)->dnumber = ((func->ctx + func->ctx_count - del)->locals + *((ushort*)(++pointers->ip)))->dnumber;
+	pointers->ip++;
 }
 
 //Load int from variable, whose 2-byte context and 2-byte id inlined to insn stream, push on TOS.
 void static INLINE command_LOADCTXIVAR(registers* pointers)
 {
+	int del;
+	function_table* func;
+	if (pointers->sp >= pointers->head) stack_realloc(pointers);
+	pointers->sp++;
+	func = get_function(pointers->table, *((ushort*)(++pointers->ip)), pointers->count_functions);
+	if (func == NULL || func->ctx_count == 0) interpret_crash(ctx_empt);
+	pointers->ip++;
+	if (func->id == pointers->current_function->id) del = 2;
+	else del = 1;
+	(pointers->sp)->inumber = ((func->ctx + func->ctx_count - del)->locals + *((ushort*)(++pointers->ip)))->inumber;
+	pointers->ip++;
 }
 
 //Load string from variable, whose 2-byte context and 2-byte id inlined to insn stream, push on TOS.
 void static INLINE command_LOADCTXSVAR(registers* pointers)
 {
+	int del;
+	function_table* func;
+	if (pointers->sp >= pointers->head) stack_realloc(pointers);
+	pointers->sp++;
+	func = get_function(pointers->table, *((ushort*)(++pointers->ip)), pointers->count_functions);
+	if (func == NULL || func->ctx_count == 0) interpret_crash(ctx_empt);
+	pointers->ip++;
+	if (func->id == pointers->current_function->id) del = 2;
+	else del = 1;
+	(pointers->sp)->str_id = ((func->ctx + func->ctx_count - del)->locals + *((ushort*)(++pointers->ip)))->str_id;
+	pointers->ip++;
 }
 
 //Pop TOS and store to double variable, whose 2-byte context and 2-byte id is inlined to insn stream.
 void static INLINE command_STORECTXDVAR(registers* pointers)
 {
+	int del;
+	function_table* func;
+	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt);
+	pointers->sp--;
+	func = get_function(pointers->table, *((ushort*)(++pointers->ip)), pointers->count_functions);
+	if (func == NULL || func->ctx_count == 0) interpret_crash(ctx_empt);
+	pointers->ip++;
+	if (func->id == pointers->current_function->id) del = 2;
+	else del = 1;
+	((func->ctx + func->ctx_count - del)->locals + *((ushort*)(++pointers->ip)))->dnumber = (pointers->sp + 1)->dnumber;
+	pointers->ip++;
 }
 
 //Pop TOS and store to int variable, whose 2-byte context and 2-byte id is inlined to insn stream.
 void static INLINE command_STORECTXIVAR(registers* pointers)
 {
+	int del;
+	function_table* func;
+	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt);
+	pointers->sp--;
+	func = get_function(pointers->table, *((ushort*)(++pointers->ip)), pointers->count_functions);
+	if (func == NULL || func->ctx_count == 0) interpret_crash(ctx_empt);
+	pointers->ip++;
+	if (func->id == pointers->current_function->id) del = 2;
+	else del = 1;
+	((func->ctx + func->ctx_count - del)->locals + *((ushort*)(++pointers->ip)))->inumber = (pointers->sp + 1)->inumber;
+	pointers->ip++;
 }
 
 //Pop TOS and store to string variable, whose 2-byte context and 2-byte id is inlined to insn stream.
 void static INLINE command_STORECTXSVAR(registers* pointers)
 {
+	int del;
+	function_table* func;
+	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt);
+	pointers->sp--;
+	func = get_function(pointers->table, *((ushort*)(++pointers->ip)), pointers->count_functions);
+	if (func == NULL || func->ctx_count == 0) interpret_crash(ctx_empt);
+	pointers->ip++;
+	if (func->id == pointers->current_function->id) del = 2;
+	else del = 1;
+	((func->ctx + func->ctx_count - del)->locals + *((ushort*)(++pointers->ip)))->str_id = (pointers->sp + 1)->str_id;
+	pointers->ip++;
 }
 
 //Compare 2 topmost doubles, pushing libc-stryle comparator value cmp(upper, lower) as integer.
@@ -658,6 +724,7 @@ void static INLINE command_CALL(registers* pointers)
 //Call native function, next two bytes - id of the native function.
 void static INLINE command_CALLNATIVE(registers* pointers)
 {
+	//Something wonderfull and beautiful.
 }
 
 //Return to call location.
@@ -668,6 +735,7 @@ void static INLINE command_RETURN(registers* pointers)
 //Breakpoint for the debugger.
 void static INLINE command_BREAK(registers* pointers)
 {
+	//Something, that can help.
 }
 
 /*End of Instructions*/

@@ -29,10 +29,7 @@ typedef struct{
 	unsigned int ctx_count;
 }function_table;
 
-
-
-
-
+function_table* get_function(function_table* table, unsigned short id, int function_count);
 
 
 #endif
