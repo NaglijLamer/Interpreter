@@ -1,4 +1,7 @@
 //File with arrays for string constants.
+#ifdef _MSC_VER
+#define _CRT_SECURE_NO_WARNINGS
+#endif
 
 #include <stdlib.h>
 #include <string.h>

@@ -18,31 +18,32 @@
 registers parser_file(FILE* program)
 {
 	registers* pointers;
-	file_header* fh;
-	function_header* mh;
+	file_header1* fh1;
+	file_header2* fh2;
+	function_header1* mh1;
+	function_header2* mh2;
 	char *string_buffer, *substring;
-	char** buf;
 	size_t size;
 	int current_offset = 0;
 	uint i;
 
-	//Reading of file-header.
-	fh = (file_header*)malloc(sizeof(file_header));
-	size = fread(fh, sizeof(file_header), 1, program);
-	if (1 != size || fh->signature != 0x4D56) interpret_crash(wrng_file);
+	//Reading of the first part of file-header.
+	fh1 = (file_header1*)malloc(sizeof(file_header1));
+	size = fread(fh1, sizeof(file_header1), 1, program);
+	if (1 != size || fh1->signature != 0x4D56) interpret_crash(wrng_file);
 
 	//Creation of the constant pool.
 	pointers = (registers*)malloc(sizeof(registers));
 	pointers->pool = pool_create();
 
 	//Reading of constants.
-	if (fh->count_constant != 0)
+	if (fh1->count_constant != 0)
 	{
-		string_buffer = (char*)malloc(fh->size_of_constant);
-		size = fread(string_buffer, fh->size_of_constant, 1, program);
+		string_buffer = (char*)malloc(fh1->size_of_constant);
+		size = fread(string_buffer, fh1->size_of_constant, 1, program);
 		if (1 != size) interpret_crash(wrng_file);
 		substring = string_buffer;
-		for (i = 1; i <= fh->count_constant; i++)
+		for (i = 1; i <= fh1->count_constant; i++)
 		{			
 			add_const(i, pointers->pool, substring); 
 			substring += strlen(substring) + 1;
@@ -50,24 +51,34 @@ registers parser_file(FILE* program)
 		free(string_buffer);
 	}
 
+	//Reading of the second part of file-header.
+	fh2 = (file_header2*)malloc(sizeof(file_header2));
+	size = fread(fh2, sizeof(file_header2), 1, program);
+	if (size != 1) interpret_crash(wrng_file);
+
 	//Reading of functions.
-	pointers->count_of_functions = fh->count_function;
-	pointers->table = (function_table*)malloc(sizeof(function_table) * fh->count_function);
-	mh = (function_header*)malloc(sizeof(function_header));
-	pointers->byte_code = (function)malloc(fh->size_of_file - fh->size_of_constant - sizeof(file_header) - sizeof(function_header) * fh->count_function);
-	for (i = 0; i < fh->count_function; i++)
+	pointers->count_of_functions = fh2->count_function; //Is it an important knoledge?..
+	pointers->table = (function_table*)malloc(sizeof(function_table) * fh2->count_function);
+	mh1 = (function_header1*)malloc(sizeof(function_header1));
+	mh2 = (function_header2*)malloc(sizeof(function_header2));
+	for (i = 0; i < fh2->count_function; i++)
 	{
-		size = fread(mh, sizeof(function_header), 1, program);
+		size = fread(mh1, sizeof(function_header1), 1, program);
 		if (1 != size) interpret_crash(wrng_file);
-		size = fread((pointers->byte_code + current_offset), mh->size_of_byte_code, 1, program);
+		pointers->byte_code = (function)realloc(pointers->byte_code, current_offset + mh1->size_of_byte_code);
+		size = fread((pointers->byte_code + current_offset), mh1->size_of_byte_code, 1, program);
 		if (1 != size) interpret_crash(wrng_file);
-		(pointers->table + i)->id = mh->id;
+		size = fread(mh2, sizeof(function_header2), 1, program);
+		if (1 != size) interpret_crash(wrng_file);
+		(pointers->table + i)->id = mh2->id;
 		(pointers->table + i)->offset = pointers->byte_code + current_offset;
-		if (mh->id == fh->entry_point_id) pointers->ip = pointers->byte_code + current_offset;
-		current_offset += mh->size_of_byte_code;
+		if (mh2->id == fh2->entry_point_id) pointers->ip = pointers->byte_code + current_offset;
+		current_offset += mh1->size_of_byte_code;
 	}
-	free(fh);
-	free(mh);
+	free(fh1);
+	free(fh2);
+	free(mh1);
+	free(mh2);
 	fclose(program);
 	return *pointers;
 }

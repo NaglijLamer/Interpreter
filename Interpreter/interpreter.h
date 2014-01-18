@@ -31,7 +31,7 @@ typedef struct
 	function byte_code;		//Pointer to the byte_code.
 	char** pool;			//May be a pointer for a constant pool.
 	function_table* table;	//Comparison of function ids and offsets.
-	uint count_of_functions;
+	uint count_of_functions; //Really?
 }registers;
 
 int interpreter(registers pointers);

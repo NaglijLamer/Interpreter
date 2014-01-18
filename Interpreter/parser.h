@@ -1,27 +1,34 @@
 #ifndef PARSER_H_
 #define PARSER_H_
 
-#pragma pack(1)
+#pragma pack(push,1)
 #include "interpreter.h"
 
 registers parser_file(FILE* program);
 
 typedef struct{
 	ushort signature;
-	ushort version;
+	uint version;
 	uint count_constant;
 	uint size_of_constant;
-	uint size_of_file;
+}file_header1;
+
+typedef struct{
 	ushort entry_point_id;
 	uint count_function;
-}file_header;
+}file_header2;
+
+typedef struct{
+	uint size_of_function;
+	uint size_of_byte_code;
+	uint size_of_sign;
+}function_header1;
 
 typedef struct{
 	ushort id;
-	uint size_of_function;
-	uint size_of_byte_code;
-	ushort size_of_arguments;
-	ushort size_of_locals;
-}function_header;
+	ushort count_of_locals;
+	ushort count_of_arguments;
+}function_header2;
 
+#pragma pack(pop)
 #endif
