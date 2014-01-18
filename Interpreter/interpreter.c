@@ -205,6 +205,30 @@ void static INLINE command_INEG(registers* pointers)
 	(pointers->sp)->inumber = -((pointers->sp)->inumber);
 }
 
+//Arithmetic OR of 2 ints on TOS, push value back.
+void static INLINE command_IAOR(registers* pointers)
+{
+	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt);
+	pointers->sp--;
+	(pointers->sp)->inumber = (pointers->sp + 1)->inumber | (pointers->sp)->inumber;
+}
+
+//Arithmetic AND of 2 ints on TOS, push value back.
+void static INLINE command_IAAND(registers* pointers)
+{
+	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt);
+	pointers->sp--;
+	(pointers->sp)->inumber = (pointers->sp + 1)->inumber & (pointers->sp)->inumber;
+}
+
+//Arithmetic XOR of 2 ints on TOS, push value back.
+void static INLINE command_IAXOR(registers* pointers)
+{
+	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt);
+	pointers->sp--;
+	(pointers->sp)->inumber = (pointers->sp + 1)->inumber ^ (pointers->sp)->inumber;
+}
+
 //Pop and print integer TOS.
 void static INLINE command_IPRINT(registers* pointers)
 {
