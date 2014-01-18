@@ -170,6 +170,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="constant_pool.c" />
+    <ClCompile Include="context.c" />
     <ClCompile Include="parser.c" />
     <ClCompile Include="instant_exit.c">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Full</Optimization>
@@ -182,6 +183,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="constant_pool.h" />
+    <ClInclude Include="context.h" />
     <ClInclude Include="parser.h" />
     <ClInclude Include="commands.h" />
     <ClInclude Include="instant_exit.h" />

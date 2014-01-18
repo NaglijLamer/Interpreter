@@ -55,9 +55,9 @@ registers* parser_file(FILE* program)
 	fh2 = (file_header2*)malloc(sizeof(file_header2));
 	size = fread(fh2, sizeof(file_header2), 1, program);
 	if (size != 1) interpret_crash(wrng_file);
+	pointers->count_functions = fh2->count_function;
 
 	//Reading of functions.
-	pointers->count_of_functions = fh2->count_function; //Is it an important knoledge?..
 	pointers->table = (function_table*)malloc(sizeof(function_table) * fh2->count_function);
 	pointers->byte_code = NULL;
 	mh1 = (function_header1*)malloc(sizeof(function_header1));
@@ -73,7 +73,17 @@ registers* parser_file(FILE* program)
 		if (1 != size) interpret_crash(wrng_file);	
 		(pointers->table + i)->id = mh2->id;
 		(pointers->table + i)->offset = pointers->byte_code + current_offset;
-		if (mh2->id == fh2->entry_point_id) pointers->ip = pointers->byte_code + current_offset;
+		(pointers->table + i)->locals = mh2->count_of_locals;
+		(pointers->table + i)->ctx = (context_t*)malloc(sizeof(context_t) * FRAMES);
+		if (mh2->id == fh2->entry_point_id) 
+			{
+				pointers->ip = pointers->byte_code + current_offset;
+				pointers->current_function = (pointers->table + i);
+				(pointers->table + i)->ctx->return_address = NULL;
+				(pointers->table + i)->ctx->locals = (stack_t*)malloc(sizeof(stack_t) * mh2->count_of_locals);
+				(pointers->table + i)->ctx_count++;
+			}
+
 		current_offset += mh1->size_of_byte_code;
 	}
 	free(fh1);

@@ -5,7 +5,7 @@
 
 #include <stdlib.h>
 #include <string.h>
-#define SIZE 65535
+#define SIZE 65536
 
 char* get_const(short id, char** pool)
 {
