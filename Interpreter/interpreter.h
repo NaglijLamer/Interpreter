@@ -34,7 +34,7 @@ typedef struct
 	uint count_of_functions; //Really?
 }registers;
 
-int interpreter(registers pointers);
+int interpreter(registers* pointers);
 void static stack_realloc(registers* pointers);
 void registers_destruction(registers* pointers);
 

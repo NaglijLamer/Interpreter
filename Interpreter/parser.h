@@ -4,7 +4,7 @@
 #pragma pack(push,1)
 #include "interpreter.h"
 
-registers parser_file(FILE* program);
+registers* parser_file(FILE* program);
 
 typedef struct{
 	ushort signature;

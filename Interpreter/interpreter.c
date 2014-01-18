@@ -579,31 +579,34 @@ void static INLINE command_BREAK(registers* pointers)
 
 
 //Interpeter body. Really.
-int interpreter(registers pointers)
+int interpreter(registers* pointers)
 {
 	//Initialization of calculation stack.
-	pointers.bottom = (stack_t*)malloc(sizeof(stack_t) * START_SIZE);
-	pointers.head = pointers.bottom + START_SIZE;
-	pointers.sp = pointers.bottom + ZERO_OFFSET;
+	pointers->bottom = (stack_t*)malloc(sizeof(stack_t) * START_SIZE);
+	pointers->head = pointers->bottom + START_SIZE;
+	pointers->sp = pointers->bottom + ZERO_OFFSET;
 	//VERY BIG SWITCH! VERY. BIG.
 	while (TRUE)
 	{
-		switch(*pointers.ip)
+		switch(*pointers->ip)
 		{
-			#define CASE(code, l) case code : command_##code (&pointers); break;
+			#define CASE(code, l) case code : command_##code (pointers); break;
 				FOR_BYTECODES( CASE )
-			case STOP: registers_destruction(&pointers); return stp_commnd;
-			default: command_INVALID(&pointers);
+			case STOP: registers_destruction(pointers); return stp_commnd;
+			default: command_INVALID(pointers);
 		}
-		pointers.ip++;
+		pointers->ip++;
 	}
 }
 
+//Where it can be used? Possibly, define it in instant_exit to use it everywhere?..
 void registers_destruction(registers* pointers)
 {
 	free(pointers->bottom);
-	free(pointers->pool);
+	//free(pointers->pool);
 	free(pointers->table);
 	free(pointers->byte_code);
+	pool_destroy(pointers->pool);
+	free(pointers);
 	//e.t.c.
 }

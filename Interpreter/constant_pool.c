@@ -7,13 +7,6 @@
 #include <string.h>
 #define SIZE 65535
 
-char** pool_create()
-{
-	char** pool = (char**)calloc(SIZE, sizeof(char*));
-	*pool = "";
-	return pool;
-}
-
 char* get_const(short id, char** pool)
 {
 	return *(pool + id);
@@ -21,8 +14,16 @@ char* get_const(short id, char** pool)
 
 void add_const(short id, char** pool, char* value)
 {
-	*(pool + id) = (char*)malloc(strlen(value));
+	*(pool + id) = (char*)malloc(strlen(value) + 1);
 	strcpy(*(pool + id), value);
+}
+
+char** pool_create()
+{
+	char** pool = (char**)calloc(SIZE, sizeof(char*));
+	add_const(0, pool, "");
+	//*(pool + 0) = "";
+	return pool;
 }
 
 void pool_destroy(char** pool)

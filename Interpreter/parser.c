@@ -15,7 +15,7 @@
 //Parser of file.
 //The constant '1' in the checking of read proccess must be... seeing better.
 //In the future we must create some registers for count of locals or arguments. Or. Add this information to the table of functions.
-registers parser_file(FILE* program)
+registers* parser_file(FILE* program)
 {
 	registers* pointers;
 	file_header1* fh1;
@@ -30,7 +30,7 @@ registers parser_file(FILE* program)
 	//Reading of the first part of file-header.
 	fh1 = (file_header1*)malloc(sizeof(file_header1));
 	size = fread(fh1, sizeof(file_header1), 1, program);
-	if (1 != size || fh1->signature != 0x4D56) interpret_crash(wrng_file);
+	if (1 != size || fh1->signature != 0xBABA) interpret_crash(wrng_file);
 
 	//Creation of the constant pool.
 	pointers = (registers*)malloc(sizeof(registers));
@@ -59,17 +59,18 @@ registers parser_file(FILE* program)
 	//Reading of functions.
 	pointers->count_of_functions = fh2->count_function; //Is it an important knoledge?..
 	pointers->table = (function_table*)malloc(sizeof(function_table) * fh2->count_function);
+	pointers->byte_code = NULL;
 	mh1 = (function_header1*)malloc(sizeof(function_header1));
 	mh2 = (function_header2*)malloc(sizeof(function_header2));
 	for (i = 0; i < fh2->count_function; i++)
 	{
 		size = fread(mh1, sizeof(function_header1), 1, program);
+		if ((1 != size) & fseek(program, mh1->size_of_sign, SEEK_CUR)) interpret_crash(wrng_file);
+		size = fread(mh2, sizeof(function_header2), 1, program);
 		if (1 != size) interpret_crash(wrng_file);
 		pointers->byte_code = (function)realloc(pointers->byte_code, current_offset + mh1->size_of_byte_code);
 		size = fread((pointers->byte_code + current_offset), mh1->size_of_byte_code, 1, program);
-		if (1 != size) interpret_crash(wrng_file);
-		size = fread(mh2, sizeof(function_header2), 1, program);
-		if (1 != size) interpret_crash(wrng_file);
+		if (1 != size) interpret_crash(wrng_file);	
 		(pointers->table + i)->id = mh2->id;
 		(pointers->table + i)->offset = pointers->byte_code + current_offset;
 		if (mh2->id == fh2->entry_point_id) pointers->ip = pointers->byte_code + current_offset;
@@ -80,5 +81,5 @@ registers parser_file(FILE* program)
 	free(mh1);
 	free(mh2);
 	fclose(program);
-	return *pointers;
+	return pointers;
 }
