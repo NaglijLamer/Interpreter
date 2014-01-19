@@ -14,20 +14,22 @@ typedef union
 	long long str_id;
 }stack_t;
 
+typedef struct function_table function_table;
 //Context (like stack frame).
 typedef struct{
 	function return_address;
+	function_table* previous_function;
 	stack_t* locals;
 }context_t;
 
 //Function (for "hash"-table where key is id).
-typedef struct{
+struct function_table{
 	unsigned short id;
 	unsigned short locals;
-	function offset;
+	unsigned int offset;
 	context_t* ctx;
 	unsigned int ctx_count;
-}function_table;
+};
 
 function_table* get_function(function_table* table, unsigned short id, int function_count);
 

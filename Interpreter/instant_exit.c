@@ -14,6 +14,7 @@ void interpret_crash(int error_code)
 		case stck_empt: fputs("Error! Stack is empty or not enough arguments!", stderr); break;
 		case wrng_file: fputs("Error! There is not an executable file!", stderr); break;
 		case ctx_empt: fputs("Error! The appeal to a context which doesn't exist!", stderr); break;
+		case ctx_overflow: fputs("Error! Too many frames for one function!", stderr); break;
 
 		case stp_commnd: fputs("Execution was stopped by command!", stderr); break;
 	}
