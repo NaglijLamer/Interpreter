@@ -25,6 +25,7 @@ typedef struct
 
 int interpreter(registers* pointers);
 void static stack_realloc(registers* pointers);
+void interpret_crash(int err_code, registers* pointers);
 void registers_destruction(registers* pointers);
 
 #endif

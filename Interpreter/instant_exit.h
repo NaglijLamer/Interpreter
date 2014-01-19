@@ -14,6 +14,6 @@ typedef enum
 	stp_commnd = 6109,
 }error_codes;
 
-void interpret_crash(int error_code);
+void program_crash(int error_code);
 
 #endif

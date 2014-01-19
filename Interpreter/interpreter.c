@@ -22,7 +22,7 @@ void static stack_realloc(registers* pointers)
 	size = (pointers->head - pointers->bottom) << 1;
 	offset = pointers->sp - pointers->bottom;
 	pointers->bottom = (stack_t*)realloc(pointers->bottom, size);
-	if (pointers->bottom == NULL) interpret_crash(stck_overflow);
+	if (pointers->bottom == NULL) interpret_crash(stck_overflow, pointers);
 	pointers->head = pointers->bottom + size;
 	pointers->sp = pointers->bottom + offset;
 }
@@ -32,7 +32,7 @@ void static stack_realloc(registers* pointers)
 //Invalid instruction.
 void static INLINE command_INVALID(registers* pointers)
 {
-	interpret_crash(inval_instr);
+	interpret_crash(inval_instr, pointers);
 }
 
 //Load double on TOS, inlined into insn stream.
@@ -121,7 +121,7 @@ void static INLINE command_ILOADM1(registers* pointers)
 //Add 2 doubles on TOS, push value back.
 void static INLINE command_DADD(registers* pointers)
 {
-	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt);
+	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt, pointers);
 	pointers->sp--;
 	(pointers->sp)->dnumber += (pointers->sp + 1)->dnumber;
 }
@@ -129,7 +129,7 @@ void static INLINE command_DADD(registers* pointers)
 //Add 2 ints on TOS, push value back.
 void static INLINE command_IADD(registers* pointers)
 {
-	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt);
+	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt, pointers);
 	pointers->sp--;
 	(pointers->sp)->inumber += (pointers->sp + 1)->inumber;
 }
@@ -137,7 +137,7 @@ void static INLINE command_IADD(registers* pointers)
 //Subtract 2 doubles on TOS (lower from upper), push value back.
 void static INLINE command_DSUB(registers* pointers)
 {
-	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt);
+	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt, pointers);
 	pointers->sp--;
 	(pointers->sp)->dnumber = (pointers->sp + 1)->dnumber - (pointers->sp)->dnumber;
 }
@@ -145,7 +145,7 @@ void static INLINE command_DSUB(registers* pointers)
 //Subtract 2 ints on TOS (lower from upper), push value back.
 void static INLINE command_ISUB(registers* pointers)
 {
-	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt);
+	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt, pointers);
 	pointers->sp--;
 	(pointers->sp)->inumber = (pointers->sp + 1)->inumber - (pointers->sp)->inumber;
 }
@@ -153,7 +153,7 @@ void static INLINE command_ISUB(registers* pointers)
 //Multiply 2 doubles on TOS, push value back.
 void static INLINE command_DMUL(registers* pointers)
 {
-	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt);
+	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt, pointers);
 	pointers->sp--;
 	(pointers->sp)->dnumber *= (pointers->sp + 1)->dnumber;
 }
@@ -161,7 +161,7 @@ void static INLINE command_DMUL(registers* pointers)
 //Multiply 2 ints on TOS, push value back.
 void static INLINE command_IMUL(registers* pointers)
 {
-	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt);
+	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt, pointers);
 	pointers->sp--;
 	(pointers->sp)->inumber *= (pointers->sp + 1)->inumber;
 }
@@ -169,7 +169,7 @@ void static INLINE command_IMUL(registers* pointers)
 //Divide 2 doubles on TOS (upper to lower), push value back.
 void static INLINE command_DDIV(registers* pointers)
 {
-	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt);
+	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt, pointers);
 	pointers->sp--;
 	(pointers->sp)->dnumber = (pointers->sp + 1)->dnumber / (pointers->sp)->dnumber;
 }
@@ -177,7 +177,7 @@ void static INLINE command_DDIV(registers* pointers)
 //Divide 2 ints on TOS (upper to lower), push value back.
 void static INLINE command_IDIV(registers* pointers)
 {
-	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt);
+	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt, pointers);
 	pointers->sp--;
 	(pointers->sp)->inumber = (pointers->sp + 1)->inumber / (pointers->sp)->inumber;
 }
@@ -185,7 +185,7 @@ void static INLINE command_IDIV(registers* pointers)
 //Modulo operation on 2 ints on TOS (upper to lower), push value back.
 void static INLINE command_IMOD(registers* pointers)
 {
-	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt);
+	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt, pointers);
 	pointers->sp--;
 	(pointers->sp)->inumber = (pointers->sp + 1)->inumber % (pointers->sp)->inumber;
 }
@@ -193,21 +193,21 @@ void static INLINE command_IMOD(registers* pointers)
 //Negate double on TOS.
 void static INLINE command_DNEG(registers* pointers)
 {
-	if (pointers->sp < pointers->bottom) interpret_crash(stck_empt);
+	if (pointers->sp < pointers->bottom) interpret_crash(stck_empt, pointers);
 	(pointers->sp)->dnumber = -((pointers->sp)->dnumber);
 }
 
 //Negate int on TOS.
 void static INLINE command_INEG(registers* pointers)
 {
-	if (pointers->sp < pointers->bottom) interpret_crash(stck_empt);
+	if (pointers->sp < pointers->bottom) interpret_crash(stck_empt, pointers);
 	(pointers->sp)->inumber = -((pointers->sp)->inumber);
 }
 
 //Arithmetic OR of 2 ints on TOS, push value back.
 void static INLINE command_IAOR(registers* pointers)
 {
-	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt);
+	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt, pointers);
 	pointers->sp--;
 	(pointers->sp)->inumber = (pointers->sp + 1)->inumber | (pointers->sp)->inumber;
 }
@@ -215,7 +215,7 @@ void static INLINE command_IAOR(registers* pointers)
 //Arithmetic AND of 2 ints on TOS, push value back.
 void static INLINE command_IAAND(registers* pointers)
 {
-	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt);
+	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt, pointers);
 	pointers->sp--;
 	(pointers->sp)->inumber = (pointers->sp + 1)->inumber & (pointers->sp)->inumber;
 }
@@ -223,7 +223,7 @@ void static INLINE command_IAAND(registers* pointers)
 //Arithmetic XOR of 2 ints on TOS, push value back.
 void static INLINE command_IAXOR(registers* pointers)
 {
-	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt);
+	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt, pointers);
 	pointers->sp--;
 	(pointers->sp)->inumber = (pointers->sp + 1)->inumber ^ (pointers->sp)->inumber;
 }
@@ -231,42 +231,42 @@ void static INLINE command_IAXOR(registers* pointers)
 //Pop and print integer TOS.
 void static INLINE command_IPRINT(registers* pointers)
 {
-	if (pointers->sp < pointers->bottom) interpret_crash(stck_empt);
-	printf("%d\n", (pointers->sp)->inumber);
+	if (pointers->sp < pointers->bottom) interpret_crash(stck_empt, pointers);
+	printf("%lld\n", (pointers->sp)->inumber);
 }
 
 //Pop and print double TOS.
 void static INLINE command_DPRINT(registers* pointers)
 {
-	if (pointers->sp < pointers->bottom) interpret_crash(stck_empt);
+	if (pointers->sp < pointers->bottom) interpret_crash(stck_empt, pointers);
 	printf("%f\n", (pointers->sp)->dnumber);
 }
 
 //Pop and print string TOS.
 void static INLINE command_SPRINT(registers* pointers)
 {
-	if (pointers->sp < pointers->bottom) interpret_crash(stck_empt);
+	if (pointers->sp < pointers->bottom) interpret_crash(stck_empt, pointers);
 	printf("%s\n",  get_const((short)((pointers->sp)->str_id), pointers->pool));
 }
 
 //Convert int on TOS to double.
 void static INLINE command_I2D(registers* pointers)
 {
-	if (pointers->sp < pointers->bottom) interpret_crash(stck_empt);	
+	if (pointers->sp < pointers->bottom) interpret_crash(stck_empt, pointers);	
 	(pointers->sp)->dnumber = (double)((pointers->sp)->inumber);
 }
 
 //Convert double on TOS to int.
 void static INLINE command_D2I(registers* pointers)
 {
-	if (pointers->sp < pointers->bottom) interpret_crash(stck_empt);	
+	if (pointers->sp < pointers->bottom) interpret_crash(stck_empt, pointers);	
 	(pointers->sp)->inumber = (int)((pointers->sp)->dnumber);
 }
 
 //Convert string on TOS to int.
 void static INLINE command_S2I(registers* pointers)
 {
-	if (pointers->sp < pointers->bottom) interpret_crash(stck_empt);
+	if (pointers->sp < pointers->bottom) interpret_crash(stck_empt, pointers);
 	(pointers->sp)->inumber = atoi(get_const((short)((pointers->sp)->str_id), pointers->pool));
 }
 
@@ -274,7 +274,7 @@ void static INLINE command_S2I(registers* pointers)
 void static INLINE command_SWAP(registers* pointers)
 {
 	stack_t top;
-	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt);
+	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt, pointers);
 	top = *(pointers->sp);
 	*(pointers->sp) = *(pointers->sp - 1);
 	*(pointers->sp - 1) = top;
@@ -283,7 +283,7 @@ void static INLINE command_SWAP(registers* pointers)
 //Remove topmost value.
 void static INLINE command_POP(registers* pointers)
 {
-	if (pointers->sp < pointers->bottom) interpret_crash(stck_empt);
+	if (pointers->sp < pointers->bottom) interpret_crash(stck_empt, pointers);
 	pointers->sp--;
 }
 
@@ -383,98 +383,98 @@ void static INLINE command_LOADSVAR3(registers* pointers)
 	(pointers->sp)->str_id = ((pointers->current_function->ctx + pointers->current_function->ctx_count - 1)->locals + 3)->str_id;
 }
 
-//Pop TOS and store to double variable 0, push on TOS.
+//Pop TOS and store to double variable 0.
 void static INLINE command_STOREDVAR0(registers* pointers)
 {
-	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt);
+	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt, pointers);
 	pointers->sp--;
 	((pointers->current_function->ctx + pointers->current_function->ctx_count - 1)->locals)->dnumber = (pointers->sp + 1)->dnumber;
 }
 
-//Pop TOS and store to double variable 1, push on TOS.
+//Pop TOS and store to double variable 1.
 void static INLINE command_STOREDVAR1(registers* pointers)
 {
-	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt);
+	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt, pointers);
 	pointers->sp--;
 	((pointers->current_function->ctx + pointers->current_function->ctx_count - 1)->locals + 1)->dnumber = (pointers->sp + 1)->dnumber;
 }
 
-//Pop TOS and store to double variable 2, push on TOS.
+//Pop TOS and store to double variable 2.
 void static INLINE command_STOREDVAR2(registers* pointers)
 {
-	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt);
+	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt, pointers);
 	pointers->sp--;
 	((pointers->current_function->ctx + pointers->current_function->ctx_count - 1)->locals + 2)->dnumber = (pointers->sp + 1)->dnumber;
 }
 
-//Pop TOS and store to double variable 3, push on TOS.
+//Pop TOS and store to double variable 3.
 void static INLINE command_STOREDVAR3(registers* pointers)
 {
-	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt);
+	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt, pointers);
 	pointers->sp--;
 	((pointers->current_function->ctx + pointers->current_function->ctx_count - 1)->locals + 3)->dnumber = (pointers->sp + 1)->dnumber;
 }
 
-//Pop TOS and store to int variable 0, push on TOS.
+//Pop TOS and store to int variable 0.
 void static INLINE command_STOREIVAR0(registers* pointers)
 {
-	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt);
+	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt, pointers);
 	pointers->sp--;
 	((pointers->current_function->ctx + pointers->current_function->ctx_count - 1)->locals)->inumber = (pointers->sp + 1)->inumber;
 }
 
-//Pop TOS and store to int variable 1, push on TOS.
+//Pop TOS and store to int variable 1.
 void static INLINE command_STOREIVAR1(registers* pointers)
 {
-	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt);
+	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt, pointers);
 	pointers->sp--;
 	((pointers->current_function->ctx + pointers->current_function->ctx_count - 1)->locals + 1)->inumber = (pointers->sp + 1)->inumber;
 }
 
-//Pop TOS and store to int variable 2, push on TOS.
+//Pop TOS and store to int variable 2.
 void static INLINE command_STOREIVAR2(registers* pointers)
 {
-	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt);
+	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt, pointers);
 	pointers->sp--;
 	((pointers->current_function->ctx + pointers->current_function->ctx_count - 1)->locals + 2)->inumber = (pointers->sp + 1)->inumber;
 }
 
-//Pop TOS and store to int variable 3, push on TOS.
+//Pop TOS and store to int variable 3.
 void static INLINE command_STOREIVAR3(registers* pointers)
 {
-	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt);
+	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt, pointers);
 	pointers->sp--;
 	((pointers->current_function->ctx + pointers->current_function->ctx_count - 1)->locals + 3)->inumber = (pointers->sp + 1)->inumber;
 }
 
-//Pop TOS and store to string variable 0, push on TOS.
+//Pop TOS and store to string variable 0.
 void static INLINE command_STORESVAR0(registers* pointers)
 {
-	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt);
+	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt, pointers);
 	pointers->sp--;
 	((pointers->current_function->ctx + pointers->current_function->ctx_count - 1)->locals)->str_id = (pointers->sp + 1)->str_id;
 }
 
-//Pop TOS and store to string variable 1, push on TOS.
+//Pop TOS and store to string variable 1.
 void static INLINE command_STORESVAR1(registers* pointers)
 {
-	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt);
+	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt, pointers);
 	pointers->sp--;
 	((pointers->current_function->ctx + pointers->current_function->ctx_count - 1)->locals + 1)->str_id = (pointers->sp + 1)->str_id;
 }
 
-//Pop TOS and store to string variable 2, push on TOS.
+//Pop TOS and store to string variable 2.
 void static INLINE command_STORESVAR2(registers* pointers)
 {
-	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt);
+	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt, pointers);
 	pointers->sp--;
 	((pointers->current_function->ctx + pointers->current_function->ctx_count - 1)->locals + 2)->str_id = (pointers->sp + 1)->str_id;
 }
 
-//Pop TOS and store to string variable 3, push on TOS.
+//Pop TOS and store to string variable 3.
 void static INLINE command_STORESVAR3(registers* pointers)
 {
-	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt);
+	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt, pointers);
 	pointers->sp--;
 	((pointers->current_function->ctx + pointers->current_function->ctx_count - 1)->locals + 3)->str_id = (pointers->sp + 1)->str_id;
 }
@@ -509,7 +509,7 @@ void static INLINE command_LOADSVAR(registers* pointers)
 //Pop TOS and store to double variable, whose 2-byte id is inlined to insn stream.
 void static INLINE command_STOREDVAR(registers* pointers)
 {
-	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt);
+	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt, pointers);
 	pointers->sp--;
 	((pointers->current_function->ctx + pointers->current_function->ctx_count - 1)->locals + *((ushort*)(++pointers->ip)))->dnumber = (pointers->sp + 1)->dnumber;
 	pointers->ip++;
@@ -518,7 +518,7 @@ void static INLINE command_STOREDVAR(registers* pointers)
 //Pop TOS and store to int variable, whose 2-byte id is inlined to insn stream.
 void static INLINE command_STOREIVAR(registers* pointers)
 {
-	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt);
+	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt, pointers);
 	pointers->sp--;
 	((pointers->current_function->ctx + pointers->current_function->ctx_count - 1)->locals + *((ushort*)(++pointers->ip)))->inumber = (pointers->sp + 1)->inumber;
 	pointers->ip++;
@@ -527,7 +527,7 @@ void static INLINE command_STOREIVAR(registers* pointers)
 //Pop TOS and store to string variable, whose 2-byte id is inlined to insn stream.
 void static INLINE command_STORESVAR(registers* pointers)
 {
-	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt);
+	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt, pointers);
 	pointers->sp--;
 	((pointers->current_function->ctx + pointers->current_function->ctx_count - 1)->locals + *((ushort*)(++pointers->ip)))->str_id = (pointers->sp + 1)->str_id;
 	pointers->ip++;
@@ -541,7 +541,7 @@ void static INLINE command_LOADCTXDVAR(registers* pointers)
 	if (pointers->sp >= pointers->head) stack_realloc(pointers);
 	pointers->sp++;
 	func = get_function(pointers->table, *((ushort*)(++pointers->ip)), pointers->count_functions);
-	if (func == NULL || func->ctx_count == 0) interpret_crash(ctx_empt);
+	if (func == NULL || func->ctx_count == 0) interpret_crash(ctx_empt, pointers);
 	pointers->ip++;
 	if (func->id == pointers->current_function->id) del = 2;
 	else del = 1;
@@ -557,7 +557,7 @@ void static INLINE command_LOADCTXIVAR(registers* pointers)
 	if (pointers->sp >= pointers->head) stack_realloc(pointers);
 	pointers->sp++;
 	func = get_function(pointers->table, *((ushort*)(++pointers->ip)), pointers->count_functions);
-	if (func == NULL || func->ctx_count == 0) interpret_crash(ctx_empt);
+	if (func == NULL || func->ctx_count == 0) interpret_crash(ctx_empt, pointers);
 	pointers->ip++;
 	if (func->id == pointers->current_function->id) del = 2;
 	else del = 1;
@@ -573,7 +573,7 @@ void static INLINE command_LOADCTXSVAR(registers* pointers)
 	if (pointers->sp >= pointers->head) stack_realloc(pointers);
 	pointers->sp++;
 	func = get_function(pointers->table, *((ushort*)(++pointers->ip)), pointers->count_functions);
-	if (func == NULL || func->ctx_count == 0) interpret_crash(ctx_empt);
+	if (func == NULL || func->ctx_count == 0) interpret_crash(ctx_empt, pointers);
 	pointers->ip++;
 	if (func->id == pointers->current_function->id) del = 2;
 	else del = 1;
@@ -586,10 +586,10 @@ void static INLINE command_STORECTXDVAR(registers* pointers)
 {
 	int del;
 	function_table* func;
-	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt);
+	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt, pointers);
 	pointers->sp--;
 	func = get_function(pointers->table, *((ushort*)(++pointers->ip)), pointers->count_functions);
-	if (func == NULL || func->ctx_count == 0) interpret_crash(ctx_empt);
+	if (func == NULL || func->ctx_count == 0) interpret_crash(ctx_empt, pointers);
 	pointers->ip++;
 	if (func->id == pointers->current_function->id) del = 2;
 	else del = 1;
@@ -602,10 +602,10 @@ void static INLINE command_STORECTXIVAR(registers* pointers)
 {
 	int del;
 	function_table* func;
-	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt);
+	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt, pointers);
 	pointers->sp--;
 	func = get_function(pointers->table, *((ushort*)(++pointers->ip)), pointers->count_functions);
-	if (func == NULL || func->ctx_count == 0) interpret_crash(ctx_empt);
+	if (func == NULL || func->ctx_count == 0) interpret_crash(ctx_empt, pointers);
 	pointers->ip++;
 	if (func->id == pointers->current_function->id) del = 2;
 	else del = 1;
@@ -618,10 +618,10 @@ void static INLINE command_STORECTXSVAR(registers* pointers)
 {
 	int del;
 	function_table* func;
-	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt);
+	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt, pointers);
 	pointers->sp--;
 	func = get_function(pointers->table, *((ushort*)(++pointers->ip)), pointers->count_functions);
-	if (func == NULL || func->ctx_count == 0) interpret_crash(ctx_empt);
+	if (func == NULL || func->ctx_count == 0) interpret_crash(ctx_empt, pointers);
 	pointers->ip++;
 	if (func->id == pointers->current_function->id) del = 2;
 	else del = 1;
@@ -632,7 +632,7 @@ void static INLINE command_STORECTXSVAR(registers* pointers)
 //Compare 2 topmost doubles, pushing libc-stryle comparator value cmp(upper, lower) as integer.
 void static INLINE command_DCMP(registers* pointers)
 {
-	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt);
+	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt, pointers);
 	if ((pointers->sp)->dnumber > (pointers->sp - 1)->dnumber) command_DLOAD1(pointers);
 	else if ((pointers->sp)->dnumber < (pointers->sp - 1)->dnumber) command_DLOADM1(pointers);
 	else command_DLOAD0(pointers);
@@ -641,7 +641,7 @@ void static INLINE command_DCMP(registers* pointers)
 //Compare 2 topmost ints, pushing libc-style comparator value cmp(upper, lower) as integer.
 void static INLINE command_ICMP(registers* pointers)
 {
-	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt);
+	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt, pointers);
 	if ((pointers->sp)->inumber > (pointers->sp - 1)->inumber) command_ILOAD1(pointers);
 	else if ((pointers->sp)->inumber < (pointers->sp - 1)->inumber) command_ILOADM1(pointers);
 	else command_ILOAD0(pointers);
@@ -656,7 +656,7 @@ void static INLINE command_JA(registers* pointers)
 //Compare two topmost integers and jump if upper != lower, next two bytes - signed sp of jump destination.
 void static INLINE command_IFICMPNE(registers* pointers)
 {
-	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt);
+	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt, pointers);
 	if ((pointers->sp)->inumber != (pointers->sp - 1)->inumber) command_JA(pointers);
 	else pointers->ip += sizeof(short);
 }
@@ -664,7 +664,7 @@ void static INLINE command_IFICMPNE(registers* pointers)
 //Compare two topmost integers and jump if upper == lower, next two bytes - signed sp of jump destination.
 void static INLINE command_IFICMPE(registers* pointers)
 {
-	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt);
+	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt, pointers);
 	if ((pointers->sp)->inumber == (pointers->sp - 1)->inumber) command_JA(pointers);
 	else pointers->ip += sizeof(short);
 }
@@ -672,7 +672,7 @@ void static INLINE command_IFICMPE(registers* pointers)
 //Compare two topmost integers and jump if upper > lower, next two bytes - signed sp of jump destination.
 void static INLINE command_IFICMPG(registers* pointers)
 {
-	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt);
+	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt, pointers);
 	if ((pointers->sp)->inumber > (pointers->sp - 1)->inumber) command_JA(pointers);
 	else pointers->ip += sizeof(short);
 }
@@ -680,7 +680,7 @@ void static INLINE command_IFICMPG(registers* pointers)
 //Compare two topmost integers and jump if upper >= lower, next two bytes - signed sp of jump destination.
 void static INLINE command_IFICMPGE(registers* pointers)
 {
-	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt);
+	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt, pointers);
 	if ((pointers->sp)->inumber >= (pointers->sp - 1)->inumber) command_JA(pointers);
 	else pointers->ip += sizeof(short);
 }
@@ -688,7 +688,7 @@ void static INLINE command_IFICMPGE(registers* pointers)
 //Compare two topmost integers and jump if upper < lower, next two bytes - signed sp of jump destination.
 void static INLINE command_IFICMPL(registers* pointers)
 {
-	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt);
+	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt, pointers);
 	if ((pointers->sp)->inumber < (pointers->sp - 1)->inumber) command_JA(pointers);
 	else pointers->ip += sizeof(short);
 }
@@ -696,7 +696,7 @@ void static INLINE command_IFICMPL(registers* pointers)
 //Compare two topmost integers and jump if upper <= lower, next two bytes - signed sp of jump destination.
 void static INLINE command_IFICMPLE(registers* pointers)
 {
-	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt);
+	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt, pointers);
 	if ((pointers->sp)->inumber <= (pointers->sp - 1)->inumber) command_JA(pointers);
 	else pointers->ip += sizeof(short);
 }
@@ -705,7 +705,7 @@ void static INLINE command_IFICMPLE(registers* pointers)
 void static INLINE command_DUMP(registers* pointers)
 {
 	if (!(pointers->sp < pointers->bottom)) 
-		printf("Int %d\nDouble %f\nStringId %d\n", (pointers->sp)->inumber, 
+		printf("Int %lld\nDouble %f\nStringId %lld\n", (pointers->sp)->inumber, 
 		(pointers->sp)->dnumber, (pointers->sp)->str_id);
 }
 
@@ -713,18 +713,23 @@ void static INLINE command_DUMP(registers* pointers)
 void static INLINE command_STOP(registers* pointers)
 {
 	//Unused.
-	interpret_crash(stp_commnd);
+	interpret_crash(stp_commnd, pointers);
 }
 
 //Call function, next two bytes - unsigned function id.
 void static INLINE command_CALL(registers* pointers)
 {
+	 int i;
 	 function_table* prev_function = pointers->current_function;
 	 pointers->current_function = get_function(pointers->table, *((ushort*)(++pointers->ip)), pointers->count_functions);
-	 if (pointers->current_function->ctx_count >= FRAMES) interpret_crash(ctx_overflow);
+	 if (pointers->current_function->ctx_count >= FRAMES) interpret_crash(ctx_overflow, pointers);
 	 (pointers->current_function->ctx + pointers->current_function->ctx_count)->previous_function = prev_function;
 	 (pointers->current_function->ctx + pointers->current_function->ctx_count)->return_address = ++pointers->ip;
 	 (pointers->current_function->ctx + pointers->current_function->ctx_count)->locals = (stack_t*)malloc(sizeof(stack_t) * pointers->current_function->locals);
+	 if ((pointers->sp + 2 - pointers->current_function->args) <= pointers->bottom) interpret_crash(stck_empt, pointers);
+	 for (i = 0; i < pointers->current_function->args; i++)
+		 *((pointers->current_function->ctx + pointers->current_function->ctx_count)->locals + i) = *(pointers->sp - i);
+	 pointers->sp -= pointers->current_function->args;
 	 pointers->current_function->ctx_count++;
 	 pointers->ip = pointers->byte_code + (pointers->current_function->offset) - 1;
 }
@@ -738,11 +743,11 @@ void static INLINE command_CALLNATIVE(registers* pointers)
 //Return to call location.
 void static INLINE command_RETURN(registers* pointers)
 {
-	if (pointers->current_function->ctx->previous_function == NULL || pointers->current_function->ctx->return_address == NULL) interpret_crash(ctx_empt);
-	pointers->ip = pointers->current_function->ctx->return_address;
 	pointers->current_function->ctx_count--;
-	free(pointers->current_function->ctx->locals);
-	pointers->current_function = pointers->current_function->ctx->previous_function;
+	if ((pointers->current_function->ctx + pointers->current_function->ctx_count)->previous_function == NULL || (pointers->current_function->ctx + pointers->current_function->ctx_count)->return_address == NULL) interpret_crash(ctx_empt, pointers);
+	pointers->ip = (pointers->current_function->ctx + pointers->current_function->ctx_count)->return_address;
+	free((pointers->current_function->ctx + pointers->current_function->ctx_count)->locals);
+	pointers->current_function = (pointers->current_function->ctx + pointers->current_function->ctx_count)->previous_function;
 }
 
 //Breakpoint for the debugger.
@@ -775,13 +780,23 @@ int interpreter(registers* pointers)
 	}
 }
 
-//Where it can be used? Possibly, define it in instant_exit to use it everywhere?..
+//If interpreting was failed... do it.
+void interpret_crash(int err_code, registers* pointers)
+{
+	registers_destruction(pointers);
+	program_crash(err_code);
+}
+
+//Destroying of all registers. Memory must be free.
 void registers_destruction(registers* pointers)
 {
+	uint i;
 	free(pointers->bottom);
+	free(pointers->current_function->ctx->locals);
+	for (i = 0; i < pointers->count_functions; i++)
+		free((pointers->table + i)->ctx);
 	free(pointers->table);
 	free(pointers->byte_code);
 	pool_destroy(pointers->pool);
 	free(pointers);
-	//e.t.c.
 }

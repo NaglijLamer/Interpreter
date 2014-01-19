@@ -32,7 +32,7 @@ registers* parser_file(FILE* program)
 	//Reading of the first part of file-header.
 	fh1 = (file_header1*)malloc(sizeof(file_header1));
 	size = fread(fh1, sizeof(file_header1), 1, program);
-	if (SUCCESS != size || fh1->signature != SIGNATURE) interpret_crash(wrng_file);
+	if (SUCCESS != size || fh1->signature != SIGNATURE) program_crash(wrng_file);
 
 	//Creation of the constant pool.
 	pointers = (registers*)malloc(sizeof(registers));
@@ -43,7 +43,7 @@ registers* parser_file(FILE* program)
 	{
 		string_buffer = (char*)malloc(fh1->size_of_constant);
 		size = fread(string_buffer, fh1->size_of_constant, 1, program);
-		if (SUCCESS != size) interpret_crash(wrng_file);
+		if (SUCCESS != size) program_crash(wrng_file);
 		substring = string_buffer;
 		for (i = 1; i <= fh1->count_constant; i++)
 		{			
@@ -56,7 +56,7 @@ registers* parser_file(FILE* program)
 	//Reading of the second part of file-header.
 	fh2 = (file_header2*)malloc(sizeof(file_header2));
 	size = fread(fh2, sizeof(file_header2), 1, program);
-	if (size != SUCCESS) interpret_crash(wrng_file);
+	if (size != SUCCESS) program_crash(wrng_file);
 	pointers->count_functions = fh2->count_function;
 
 	//Reading of functions.
@@ -67,15 +67,16 @@ registers* parser_file(FILE* program)
 	for (i = 0; i < fh2->count_function; i++)
 	{
 		size = fread(mh1, sizeof(function_header1), 1, program);
-		if ((SUCCESS != size) & fseek(program, mh1->size_of_sign, SEEK_CUR)) interpret_crash(wrng_file);
+		if ((SUCCESS != size) & fseek(program, mh1->size_of_sign, SEEK_CUR)) program_crash(wrng_file);
 		size = fread(mh2, sizeof(function_header2), 1, program);
-		if (SUCCESS != size) interpret_crash(wrng_file);
+		if (SUCCESS != size) program_crash(wrng_file);
 		pointers->byte_code = (function)realloc(pointers->byte_code, current_offset + mh1->size_of_byte_code);
 		size = fread((pointers->byte_code + current_offset), mh1->size_of_byte_code, 1, program);
-		if (SUCCESS != size) interpret_crash(wrng_file);	
+		if (SUCCESS != size) program_crash(wrng_file);	
 		(pointers->table + i)->id = mh2->id;
 		(pointers->table + i)->offset = current_offset;
 		(pointers->table + i)->locals = mh2->count_of_locals;
+		(pointers->table + i)->args = mh2->count_of_arguments;
 		(pointers->table + i)->ctx = (context_t*)malloc(sizeof(context_t) * FRAMES);
 		(pointers->table + i)->ctx_count = 0;
 		if (mh2->id == fh2->entry_point_id) 

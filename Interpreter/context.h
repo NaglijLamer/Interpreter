@@ -26,6 +26,7 @@ typedef struct{
 struct function_table{
 	unsigned short id;
 	unsigned short locals;
+	unsigned short args;
 	unsigned int offset;
 	context_t* ctx;
 	unsigned int ctx_count;

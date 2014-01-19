@@ -5,7 +5,7 @@
 #include "instant_exit.h"
 
 //Crash program, if we habe troubles with stack.
-void interpret_crash(int error_code)
+void program_crash(int error_code)
 {
 	switch(error_code)
 	{

@@ -12,7 +12,7 @@ int main(int argc, char** argv)
 	//Reading this file and interprete.
 	//Test mode.
 	FILE* file;
-	file = fopen("test3", "rb");
+	file = fopen("test6", "rb");
 	interpreter(parser_file(file));
 	
 	return EXIT_SUCCESS;
