@@ -386,7 +386,7 @@ void static INLINE command_LOADSVAR3(registers* pointers)
 //Pop TOS and store to double variable 0.
 void static INLINE command_STOREDVAR0(registers* pointers)
 {
-	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt, pointers);
+	if (pointers->sp < pointers->bottom) interpret_crash(stck_empt, pointers);
 	pointers->sp--;
 	((pointers->current_function->ctx + pointers->current_function->ctx_count - 1)->locals)->dnumber = (pointers->sp + 1)->dnumber;
 }
@@ -394,7 +394,7 @@ void static INLINE command_STOREDVAR0(registers* pointers)
 //Pop TOS and store to double variable 1.
 void static INLINE command_STOREDVAR1(registers* pointers)
 {
-	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt, pointers);
+	if (pointers->sp < pointers->bottom) interpret_crash(stck_empt, pointers);
 	pointers->sp--;
 	((pointers->current_function->ctx + pointers->current_function->ctx_count - 1)->locals + 1)->dnumber = (pointers->sp + 1)->dnumber;
 }
@@ -402,7 +402,7 @@ void static INLINE command_STOREDVAR1(registers* pointers)
 //Pop TOS and store to double variable 2.
 void static INLINE command_STOREDVAR2(registers* pointers)
 {
-	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt, pointers);
+	if (pointers->sp < pointers->bottom) interpret_crash(stck_empt, pointers);
 	pointers->sp--;
 	((pointers->current_function->ctx + pointers->current_function->ctx_count - 1)->locals + 2)->dnumber = (pointers->sp + 1)->dnumber;
 }
@@ -410,7 +410,7 @@ void static INLINE command_STOREDVAR2(registers* pointers)
 //Pop TOS and store to double variable 3.
 void static INLINE command_STOREDVAR3(registers* pointers)
 {
-	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt, pointers);
+	if (pointers->sp < pointers->bottom) interpret_crash(stck_empt, pointers);
 	pointers->sp--;
 	((pointers->current_function->ctx + pointers->current_function->ctx_count - 1)->locals + 3)->dnumber = (pointers->sp + 1)->dnumber;
 }
@@ -418,7 +418,7 @@ void static INLINE command_STOREDVAR3(registers* pointers)
 //Pop TOS and store to int variable 0.
 void static INLINE command_STOREIVAR0(registers* pointers)
 {
-	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt, pointers);
+	if (pointers->sp < pointers->bottom) interpret_crash(stck_empt, pointers);
 	pointers->sp--;
 	((pointers->current_function->ctx + pointers->current_function->ctx_count - 1)->locals)->inumber = (pointers->sp + 1)->inumber;
 }
@@ -426,7 +426,7 @@ void static INLINE command_STOREIVAR0(registers* pointers)
 //Pop TOS and store to int variable 1.
 void static INLINE command_STOREIVAR1(registers* pointers)
 {
-	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt, pointers);
+	if (pointers->sp < pointers->bottom) interpret_crash(stck_empt, pointers);
 	pointers->sp--;
 	((pointers->current_function->ctx + pointers->current_function->ctx_count - 1)->locals + 1)->inumber = (pointers->sp + 1)->inumber;
 }
@@ -434,7 +434,7 @@ void static INLINE command_STOREIVAR1(registers* pointers)
 //Pop TOS and store to int variable 2.
 void static INLINE command_STOREIVAR2(registers* pointers)
 {
-	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt, pointers);
+	if (pointers->sp < pointers->bottom) interpret_crash(stck_empt, pointers);
 	pointers->sp--;
 	((pointers->current_function->ctx + pointers->current_function->ctx_count - 1)->locals + 2)->inumber = (pointers->sp + 1)->inumber;
 }
@@ -442,7 +442,7 @@ void static INLINE command_STOREIVAR2(registers* pointers)
 //Pop TOS and store to int variable 3.
 void static INLINE command_STOREIVAR3(registers* pointers)
 {
-	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt, pointers);
+	if (pointers->sp < pointers->bottom) interpret_crash(stck_empt, pointers);
 	pointers->sp--;
 	((pointers->current_function->ctx + pointers->current_function->ctx_count - 1)->locals + 3)->inumber = (pointers->sp + 1)->inumber;
 }
@@ -450,7 +450,7 @@ void static INLINE command_STOREIVAR3(registers* pointers)
 //Pop TOS and store to string variable 0.
 void static INLINE command_STORESVAR0(registers* pointers)
 {
-	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt, pointers);
+	if (pointers->sp < pointers->bottom) interpret_crash(stck_empt, pointers);
 	pointers->sp--;
 	((pointers->current_function->ctx + pointers->current_function->ctx_count - 1)->locals)->str_id = (pointers->sp + 1)->str_id;
 }
@@ -458,7 +458,7 @@ void static INLINE command_STORESVAR0(registers* pointers)
 //Pop TOS and store to string variable 1.
 void static INLINE command_STORESVAR1(registers* pointers)
 {
-	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt, pointers);
+	if (pointers->sp < pointers->bottom) interpret_crash(stck_empt, pointers);
 	pointers->sp--;
 	((pointers->current_function->ctx + pointers->current_function->ctx_count - 1)->locals + 1)->str_id = (pointers->sp + 1)->str_id;
 }
@@ -466,7 +466,7 @@ void static INLINE command_STORESVAR1(registers* pointers)
 //Pop TOS and store to string variable 2.
 void static INLINE command_STORESVAR2(registers* pointers)
 {
-	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt, pointers);
+	if (pointers->sp < pointers->bottom) interpret_crash(stck_empt, pointers);
 	pointers->sp--;
 	((pointers->current_function->ctx + pointers->current_function->ctx_count - 1)->locals + 2)->str_id = (pointers->sp + 1)->str_id;
 }
@@ -474,7 +474,7 @@ void static INLINE command_STORESVAR2(registers* pointers)
 //Pop TOS and store to string variable 3.
 void static INLINE command_STORESVAR3(registers* pointers)
 {
-	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt, pointers);
+	if (pointers->sp < pointers->bottom) interpret_crash(stck_empt, pointers);
 	pointers->sp--;
 	((pointers->current_function->ctx + pointers->current_function->ctx_count - 1)->locals + 3)->str_id = (pointers->sp + 1)->str_id;
 }
@@ -509,7 +509,7 @@ void static INLINE command_LOADSVAR(registers* pointers)
 //Pop TOS and store to double variable, whose 2-byte id is inlined to insn stream.
 void static INLINE command_STOREDVAR(registers* pointers)
 {
-	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt, pointers);
+	if (pointers->sp < pointers->bottom) interpret_crash(stck_empt, pointers);
 	pointers->sp--;
 	((pointers->current_function->ctx + pointers->current_function->ctx_count - 1)->locals + *((ushort*)(++pointers->ip)))->dnumber = (pointers->sp + 1)->dnumber;
 	pointers->ip++;
@@ -518,7 +518,7 @@ void static INLINE command_STOREDVAR(registers* pointers)
 //Pop TOS and store to int variable, whose 2-byte id is inlined to insn stream.
 void static INLINE command_STOREIVAR(registers* pointers)
 {
-	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt, pointers);
+	if (pointers->sp < pointers->bottom) interpret_crash(stck_empt, pointers);
 	pointers->sp--;
 	((pointers->current_function->ctx + pointers->current_function->ctx_count - 1)->locals + *((ushort*)(++pointers->ip)))->inumber = (pointers->sp + 1)->inumber;
 	pointers->ip++;
@@ -527,7 +527,7 @@ void static INLINE command_STOREIVAR(registers* pointers)
 //Pop TOS and store to string variable, whose 2-byte id is inlined to insn stream.
 void static INLINE command_STORESVAR(registers* pointers)
 {
-	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt, pointers);
+	if (pointers->sp < pointers->bottom) interpret_crash(stck_empt, pointers);
 	pointers->sp--;
 	((pointers->current_function->ctx + pointers->current_function->ctx_count - 1)->locals + *((ushort*)(++pointers->ip)))->str_id = (pointers->sp + 1)->str_id;
 	pointers->ip++;
@@ -586,7 +586,7 @@ void static INLINE command_STORECTXDVAR(registers* pointers)
 {
 	int del;
 	function_table* func;
-	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt, pointers);
+	if (pointers->sp < pointers->bottom) interpret_crash(stck_empt, pointers);
 	pointers->sp--;
 	func = get_function(pointers->table, *((ushort*)(++pointers->ip)), pointers->count_functions);
 	if (func == NULL || func->ctx_count == 0) interpret_crash(ctx_empt, pointers);
@@ -602,7 +602,7 @@ void static INLINE command_STORECTXIVAR(registers* pointers)
 {
 	int del;
 	function_table* func;
-	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt, pointers);
+	if (pointers->sp < pointers->bottom) interpret_crash(stck_empt, pointers);
 	pointers->sp--;
 	func = get_function(pointers->table, *((ushort*)(++pointers->ip)), pointers->count_functions);
 	if (func == NULL || func->ctx_count == 0) interpret_crash(ctx_empt, pointers);
@@ -618,7 +618,7 @@ void static INLINE command_STORECTXSVAR(registers* pointers)
 {
 	int del;
 	function_table* func;
-	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt, pointers);
+	if (pointers->sp < pointers->bottom) interpret_crash(stck_empt, pointers);
 	pointers->sp--;
 	func = get_function(pointers->table, *((ushort*)(++pointers->ip)), pointers->count_functions);
 	if (func == NULL || func->ctx_count == 0) interpret_crash(ctx_empt, pointers);
