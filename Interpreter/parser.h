@@ -26,8 +26,8 @@ typedef struct{
 
 typedef struct{
 	ushort id;
-	ushort count_of_locals;
-	ushort count_of_arguments;
+	uint count_of_locals;
+	uint count_of_arguments;
 }function_header2;
 
 #pragma pack(pop)

@@ -25,8 +25,8 @@ typedef struct{
 //Function (for "hash"-table where key is id).
 struct function_table{
 	unsigned short id;
-	unsigned short locals;
-	unsigned short args;
+	unsigned int locals;
+	unsigned int args;
 	unsigned int offset;
 	context_t* ctx;
 	unsigned int ctx_count;
