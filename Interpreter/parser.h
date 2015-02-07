@@ -4,8 +4,10 @@
 #pragma pack(push,1)
 #include "interpreter.h"
 
+//Main parser function.
 registers* parser_file(FILE* program);
 
+//Structs for function and file headers.
 typedef struct{
 	ushort signature;
 	uint version;

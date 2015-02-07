@@ -10,10 +10,13 @@ typedef enum
 	wrng_file,
 	ctx_empt,
 	ctx_overflow,
+	no_entr_funct,
 
+	unknwn = 404,
 	stp_commnd = 6109,
 }error_codes;
 
+//Crash'em all.
 void program_crash(int error_code);
 
 #endif

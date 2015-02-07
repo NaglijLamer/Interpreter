@@ -16,7 +16,6 @@
 #include "constant_pool.h"
 
 //Parser of file.
-//In the future we must create some registers for count of locals or arguments. Or. Add this information to the table of functions.
 registers* parser_file(FILE* program)
 {
 	registers* pointers;
@@ -27,6 +26,8 @@ registers* parser_file(FILE* program)
 	char *string_buffer, *substring;
 	size_t size;
 	int current_offset = 0;
+	int entry_offset = 0;
+	char load_entry = 0;
 	uint i;
 
 	//Reading of the first part of file-header.
@@ -59,9 +60,12 @@ registers* parser_file(FILE* program)
 	if (size != SUCCESS) program_crash(wrng_file);
 	pointers->count_functions = fh2->count_function;
 
-	//Reading of functions.
+	//Initialization of some registers.
 	pointers->table = (function_table*)malloc(sizeof(function_table) * fh2->count_function);
+	pointers->ctxsp = pointers->ctx_bottom = (context_t*)malloc(sizeof(context_t) * FRAMES);
 	pointers->byte_code = NULL;
+
+	//Reading of functions.
 	mh1 = (function_header1*)malloc(sizeof(function_header1));
 	mh2 = (function_header2*)malloc(sizeof(function_header2));
 	for (i = 0; i < fh2->count_function; i++)
@@ -72,26 +76,30 @@ registers* parser_file(FILE* program)
 		if (SUCCESS != size) program_crash(wrng_file);
 		pointers->byte_code = (function)realloc(pointers->byte_code, current_offset + mh1->size_of_byte_code);
 		size = fread((pointers->byte_code + current_offset), mh1->size_of_byte_code, 1, program);
-		if (SUCCESS != size) program_crash(wrng_file);	
+		if (SUCCESS != size) program_crash(wrng_file);
+		//Initialization of function metadata.
 		(pointers->table + i)->id = mh2->id;
 		(pointers->table + i)->offset = current_offset;
 		(pointers->table + i)->locals = mh2->count_of_locals;
 		(pointers->table + i)->args = mh2->count_of_arguments;
-		(pointers->table + i)->ctx = (context_t*)malloc(sizeof(context_t) * FRAMES);
-		(pointers->table + i)->ctx_count = 0;
+		(pointers->table + i)->ctx = NULL;
+		//If this function is an entry point to program...
 		if (mh2->id == fh2->entry_point_id) 
 			{
-				//pointers->ip = pointers->byte_code + current_offset;
+				load_entry = SUCCESS;
+				entry_offset = current_offset;
 				pointers->current_function = (pointers->table + i);
-				(pointers->table + i)->ctx->return_address = NULL;
-				(pointers->table + i)->ctx->previous_function = NULL;
-				(pointers->table + i)->ctx->locals = (stack_t*)malloc(sizeof(stack_t) * mh2->count_of_locals);
-				(pointers->table + i)->ctx_count++;
+				pointers->ctxsp->locals = (stack_t*)malloc(sizeof(stack_t) * mh2->count_of_locals);
+				pointers->ctxsp->previous_ctx = NULL;
+				pointers->ctxsp->previous_function = NULL;
+				pointers->ctxsp->return_address = NULL;
+				pointers->current_function->ctx = pointers->ctxsp;
+				//Now this function ready for execution.
 			}
-
 		current_offset += mh1->size_of_byte_code;
 	}
-	pointers->ip = get_function(pointers->table, fh2->entry_point_id, pointers->count_functions)->offset + pointers->byte_code;
+	if (load_entry != SUCCESS) program_crash(no_entr_funct);
+	pointers->ip = pointers->byte_code + entry_offset;
 	free(fh1);
 	free(fh2);
 	free(mh1);
