@@ -20,7 +20,7 @@ typedef struct context_t context_t;
 //Context (like stack frame).
 struct context_t{
 	function return_address;			//Return address to the previous function.
-	function_table* previous_function;	//Pointer to the callee function.
+	function_table* previous_function;	//Pointer to the caller function.
 	stack_t* locals;					//Array of local variables.
 	context_t *previous_ctx;			//Pointer to the previous context of this function.
 };
