@@ -10,10 +10,13 @@
 int main(int argc, char** argv)
 {	
 	//Reading this file and interprete.
-	//Test mode.
 	FILE* file;
-	file = fopen("Fact15", "rb");
+#ifdef _DEBUG
+	file = fopen("outp", "rb");
+#else
+	if (argc != 2) program_crash(usage);
+	if ((file = fopen(argv[1], "rb")) == NULL) program_crash(wrng_fname);
+#endif
 	interpreter(parser_file(file));
-	
 	return EXIT_SUCCESS;
 }

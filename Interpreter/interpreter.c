@@ -387,96 +387,96 @@ void static INLINE command_LOADSVAR3(registers* pointers)
 void static INLINE command_STOREDVAR0(registers* pointers)
 {
 	if (pointers->sp < pointers->bottom) interpret_crash(stck_empt, pointers);
+	pointers->ctxsp->locals->dnumber = (pointers->sp)->dnumber;
 	pointers->sp--;
-	pointers->ctxsp->locals->dnumber = (pointers->sp + 1)->dnumber;
 }
 
 //Pop TOS and store to double variable 1.
 void static INLINE command_STOREDVAR1(registers* pointers)
 {
 	if (pointers->sp < pointers->bottom) interpret_crash(stck_empt, pointers);
+	(pointers->ctxsp->locals + 1)->dnumber = (pointers->sp)->dnumber;
 	pointers->sp--;
-	(pointers->ctxsp->locals + 1)->dnumber = (pointers->sp + 1)->dnumber;
 }
 
 //Pop TOS and store to double variable 2.
 void static INLINE command_STOREDVAR2(registers* pointers)
 {
 	if (pointers->sp < pointers->bottom) interpret_crash(stck_empt, pointers);
+	(pointers->ctxsp->locals + 2)->dnumber = (pointers->sp)->dnumber;
 	pointers->sp--;
-	(pointers->ctxsp->locals + 2)->dnumber = (pointers->sp + 1)->dnumber;
 }
 
 //Pop TOS and store to double variable 3.
 void static INLINE command_STOREDVAR3(registers* pointers)
 {
 	if (pointers->sp < pointers->bottom) interpret_crash(stck_empt, pointers);
+	(pointers->ctxsp->locals + 3)->dnumber = (pointers->sp)->dnumber;
 	pointers->sp--;
-	(pointers->ctxsp->locals + 3)->dnumber = (pointers->sp + 1)->dnumber;
 }
 
 //Pop TOS and store to int variable 0.
 void static INLINE command_STOREIVAR0(registers* pointers)
 {
 	if (pointers->sp < pointers->bottom) interpret_crash(stck_empt, pointers);
+	pointers->ctxsp->locals->inumber = (pointers->sp)->inumber;
 	pointers->sp--;
-	pointers->ctxsp->locals->inumber = (pointers->sp + 1)->inumber;
 }
 
 //Pop TOS and store to int variable 1.
 void static INLINE command_STOREIVAR1(registers* pointers)
 {
 	if (pointers->sp < pointers->bottom) interpret_crash(stck_empt, pointers);
+	(pointers->ctxsp->locals + 1)->inumber = (pointers->sp)->inumber;
 	pointers->sp--;
-	(pointers->ctxsp->locals + 1)->inumber = (pointers->sp + 1)->inumber;
 }
 
 //Pop TOS and store to int variable 2.
 void static INLINE command_STOREIVAR2(registers* pointers)
 {
 	if (pointers->sp < pointers->bottom) interpret_crash(stck_empt, pointers);
+	(pointers->ctxsp->locals + 2)->inumber = (pointers->sp)->inumber;
 	pointers->sp--;
-	(pointers->ctxsp->locals + 2)->inumber = (pointers->sp + 1)->inumber;
 }
 
 //Pop TOS and store to int variable 3.
 void static INLINE command_STOREIVAR3(registers* pointers)
 {
 	if (pointers->sp < pointers->bottom) interpret_crash(stck_empt, pointers);
+	(pointers->ctxsp->locals + 3)->inumber = (pointers->sp)->inumber;
 	pointers->sp--;
-	(pointers->ctxsp->locals + 3)->inumber = (pointers->sp + 1)->inumber;
 }
 
 //Pop TOS and store to string variable 0.
 void static INLINE command_STORESVAR0(registers* pointers)
 {
 	if (pointers->sp < pointers->bottom) interpret_crash(stck_empt, pointers);
+	pointers->ctxsp->locals->str_id = (pointers->sp)->str_id;
 	pointers->sp--;
-	pointers->ctxsp->locals->str_id = (pointers->sp + 1)->str_id;
 }
 
 //Pop TOS and store to string variable 1.
 void static INLINE command_STORESVAR1(registers* pointers)
 {
 	if (pointers->sp < pointers->bottom) interpret_crash(stck_empt, pointers);
+	(pointers->ctxsp->locals + 1)->str_id = (pointers->sp)->str_id;
 	pointers->sp--;
-	(pointers->ctxsp->locals + 1)->str_id = (pointers->sp + 1)->str_id;
 }
 
 //Pop TOS and store to string variable 2.
 void static INLINE command_STORESVAR2(registers* pointers)
 {
 	if (pointers->sp < pointers->bottom) interpret_crash(stck_empt, pointers);
+	(pointers->ctxsp->locals + 2)->str_id = (pointers->sp)->str_id;
 	pointers->sp--;
-	(pointers->ctxsp->locals + 2)->str_id = (pointers->sp + 1)->str_id;
 }
 
 //Pop TOS and store to string variable 3.
 void static INLINE command_STORESVAR3(registers* pointers)
 {
 	if (pointers->sp < pointers->bottom) interpret_crash(stck_empt, pointers);
+	(pointers->ctxsp->locals + 3)->str_id = (pointers->sp)->str_id;
 	pointers->sp--;
-	(pointers->ctxsp->locals + 3)->str_id = (pointers->sp + 1)->str_id;
 }
 
 //Load double from variable, whose 2-byte id is inlined to insn stream, push on TOS.
@@ -510,8 +510,8 @@ void static INLINE command_LOADSVAR(registers* pointers)
 void static INLINE command_STOREDVAR(registers* pointers)
 {
 	if (pointers->sp < pointers->bottom) interpret_crash(stck_empt, pointers);
+	(pointers->ctxsp->locals + *((ushort*)(++pointers->ip)))->dnumber = (pointers->sp)->dnumber;
 	pointers->sp--;
-	(pointers->ctxsp->locals + *((ushort*)(++pointers->ip)))->dnumber = (pointers->sp + 1)->dnumber;
 	pointers->ip++;
 }
 
@@ -519,8 +519,8 @@ void static INLINE command_STOREDVAR(registers* pointers)
 void static INLINE command_STOREIVAR(registers* pointers)
 {
 	if (pointers->sp < pointers->bottom) interpret_crash(stck_empt, pointers);
+	(pointers->ctxsp->locals + *((ushort*)(++pointers->ip)))->inumber = (pointers->sp)->inumber;
 	pointers->sp--;
-	(pointers->ctxsp->locals + *((ushort*)(++pointers->ip)))->inumber = (pointers->sp + 1)->inumber;
 	pointers->ip++;
 }
 
@@ -528,105 +528,117 @@ void static INLINE command_STOREIVAR(registers* pointers)
 void static INLINE command_STORESVAR(registers* pointers)
 {
 	if (pointers->sp < pointers->bottom) interpret_crash(stck_empt, pointers);
+	(pointers->ctxsp->locals + *((ushort*)(++pointers->ip)))->str_id = (pointers->sp)->str_id;
 	pointers->sp--;
-	(pointers->ctxsp->locals + *((ushort*)(++pointers->ip)))->str_id = (pointers->sp + 1)->str_id;
 	pointers->ip++;
 }
 
 //Load double from variable, whose 2-byte context and 2-byte id inlined to insn stream, push on TOS.
 void static INLINE command_LOADCTXDVAR(registers* pointers)
 {
-	/*int del;
 	function_table* func;
-	if (pointers->sp >= pointers->head) stack_realloc(pointers);
-	pointers->sp++;
-	func = get_function(pointers->table, *((ushort*)(++pointers->ip)), pointers->count_functions);
-	if (func == NULL || func->ctx_count == 0) interpret_crash(ctx_empt, pointers);
+	ushort temp_id = *((ushort*)(++pointers->ip));
 	pointers->ip++;
-	if (func->id == pointers->current_function->id) del = 2;
-	else del = 1;
-	(pointers->sp)->dnumber = ((func->ctx + func->ctx_count - del)->locals + *((ushort*)(++pointers->ip)))->dnumber;
-	pointers->ip++;*/
+	if (temp_id == pointers->current_function->id) command_LOADDVAR(pointers);
+	else
+	{
+		if (pointers->sp >= pointers->head) stack_realloc(pointers);
+		pointers->sp++;
+		func = get_function(pointers->table, temp_id, pointers->count_functions);
+		if (func == NULL || func->ctx == NULL) interpret_crash(ctx_empt, pointers);
+		(pointers->sp)->dnumber = (func->ctx->locals + *((ushort*)(++pointers->ip)))->dnumber;
+		pointers->ip++;
+	}
 }
 
 //Load int from variable, whose 2-byte context and 2-byte id inlined to insn stream, push on TOS.
 void static INLINE command_LOADCTXIVAR(registers* pointers)
 {
-	/*int del;
 	function_table* func;
-	if (pointers->sp >= pointers->head) stack_realloc(pointers);
-	pointers->sp++;
-	func = get_function(pointers->table, *((ushort*)(++pointers->ip)), pointers->count_functions);
-	if (func == NULL || func->ctx_count == 0) interpret_crash(ctx_empt, pointers);
+	ushort temp_id = *((ushort*)(++pointers->ip));
 	pointers->ip++;
-	if (func->id == pointers->current_function->id) del = 2;
-	else del = 1;
-	(pointers->sp)->inumber = ((func->ctx + func->ctx_count - del)->locals + *((ushort*)(++pointers->ip)))->inumber;
-	pointers->ip++;*/
+	if (temp_id == pointers->current_function->id) command_LOADIVAR(pointers);
+	else
+	{
+		if (pointers->sp >= pointers->head) stack_realloc(pointers);
+		pointers->sp++;
+		func = get_function(pointers->table, temp_id, pointers->count_functions);
+		if (func == NULL || func->ctx == NULL) interpret_crash(ctx_empt, pointers);
+		(pointers->sp)->inumber = (func->ctx->locals + *((ushort*)(++pointers->ip)))->inumber;
+		pointers->ip++;
+	}
 }
 
 //Load string from variable, whose 2-byte context and 2-byte id inlined to insn stream, push on TOS.
 void static INLINE command_LOADCTXSVAR(registers* pointers)
 {
-	/*int del;
 	function_table* func;
-	if (pointers->sp >= pointers->head) stack_realloc(pointers);
-	pointers->sp++;
-	func = get_function(pointers->table, *((ushort*)(++pointers->ip)), pointers->count_functions);
-	if (func == NULL || func->ctx_count == 0) interpret_crash(ctx_empt, pointers);
+	ushort temp_id = *((ushort*)(++pointers->ip));
 	pointers->ip++;
-	if (func->id == pointers->current_function->id) del = 2;
-	else del = 1;
-	(pointers->sp)->str_id = ((func->ctx + func->ctx_count - del)->locals + *((ushort*)(++pointers->ip)))->str_id;
-	pointers->ip++;*/
+	if (temp_id == pointers->current_function->id) command_LOADSVAR(pointers);
+	else
+	{
+		if (pointers->sp >= pointers->head) stack_realloc(pointers);
+		pointers->sp++;
+		func = get_function(pointers->table, temp_id, pointers->count_functions);
+		if (func == NULL || func->ctx == NULL) interpret_crash(ctx_empt, pointers);
+		(pointers->sp)->str_id = (func->ctx->locals + *((ushort*)(++pointers->ip)))->str_id;
+		pointers->ip++;
+	}
 }
 
 //Pop TOS and store to double variable, whose 2-byte context and 2-byte id is inlined to insn stream.
 void static INLINE command_STORECTXDVAR(registers* pointers)
 {
-	/*int del;
 	function_table* func;
-	if (pointers->sp < pointers->bottom) interpret_crash(stck_empt, pointers);
-	pointers->sp--;
-	func = get_function(pointers->table, *((ushort*)(++pointers->ip)), pointers->count_functions);
-	if (func == NULL || func->ctx_count == 0) interpret_crash(ctx_empt, pointers);
+	ushort temp_id = *((ushort*)(++pointers->ip));
 	pointers->ip++;
-	if (func->id == pointers->current_function->id) del = 2;
-	else del = 1;
-	((func->ctx + func->ctx_count - del)->locals + *((ushort*)(++pointers->ip)))->dnumber = (pointers->sp + 1)->dnumber;
-	pointers->ip++;*/
+	if (temp_id == pointers->current_function->id) command_STOREDVAR(pointers);
+	else
+	{
+		if (pointers->sp < pointers->bottom) interpret_crash(stck_empt, pointers);
+		func = get_function(pointers->table, temp_id, pointers->count_functions);
+		if (func == NULL || func->ctx == NULL) interpret_crash(ctx_empt, pointers);
+		(func->ctx->locals + *((ushort*)(++pointers->ip)))->dnumber = (pointers->sp)->dnumber;
+		pointers->sp--;
+		pointers->ip++;
+	}
 }
 
 //Pop TOS and store to int variable, whose 2-byte context and 2-byte id is inlined to insn stream.
 void static INLINE command_STORECTXIVAR(registers* pointers)
 {
-	/*int del;
 	function_table* func;
-	if (pointers->sp < pointers->bottom) interpret_crash(stck_empt, pointers);
-	pointers->sp--;
-	func = get_function(pointers->table, *((ushort*)(++pointers->ip)), pointers->count_functions);
-	if (func == NULL || func->ctx_count == 0) interpret_crash(ctx_empt, pointers);
+	ushort temp_id = *((ushort*)(++pointers->ip));
 	pointers->ip++;
-	if (func->id == pointers->current_function->id) del = 2;
-	else del = 1;
-	((func->ctx + func->ctx_count - del)->locals + *((ushort*)(++pointers->ip)))->inumber = (pointers->sp + 1)->inumber;
-	pointers->ip++;*/
+	if (temp_id == pointers->current_function->id) command_STOREIVAR(pointers);
+	else
+	{
+		if (pointers->sp < pointers->bottom) interpret_crash(stck_empt, pointers);
+		func = get_function(pointers->table, temp_id, pointers->count_functions);
+		if (func == NULL || func->ctx == NULL) interpret_crash(ctx_empt, pointers);
+		(func->ctx->locals + *((ushort*)(++pointers->ip)))->inumber = (pointers->sp)->inumber;
+		pointers->sp--;
+		pointers->ip++;
+	}
 }
 
 //Pop TOS and store to string variable, whose 2-byte context and 2-byte id is inlined to insn stream.
 void static INLINE command_STORECTXSVAR(registers* pointers)
 {
-	/*int del;
 	function_table* func;
-	if (pointers->sp < pointers->bottom) interpret_crash(stck_empt, pointers);
-	pointers->sp--;
-	func = get_function(pointers->table, *((ushort*)(++pointers->ip)), pointers->count_functions);
-	if (func == NULL || func->ctx_count == 0) interpret_crash(ctx_empt, pointers);
+	ushort temp_id = *((ushort*)(++pointers->ip));
 	pointers->ip++;
-	if (func->id == pointers->current_function->id) del = 2;
-	else del = 1;
-	((func->ctx + func->ctx_count - del)->locals + *((ushort*)(++pointers->ip)))->str_id = (pointers->sp + 1)->str_id;
-	pointers->ip++;*/
+	if (temp_id == pointers->current_function->id) command_STORESVAR(pointers);
+	else
+	{
+		if (pointers->sp < pointers->bottom) interpret_crash(stck_empt, pointers);
+		func = get_function(pointers->table, temp_id, pointers->count_functions);
+		if (func == NULL || func->ctx == NULL) interpret_crash(ctx_empt, pointers);
+		(func->ctx->locals + *((ushort*)(++pointers->ip)))->str_id = (pointers->sp)->str_id;
+		pointers->sp--;
+		pointers->ip++;
+	}
 }
 
 //Compare 2 topmost doubles, pushing libc-style comparator value cmp(upper, lower) as integer.
@@ -722,8 +734,8 @@ void static INLINE command_CALL(registers* pointers)
 	 uint i;
 	 context_t *prev_context;
 	 function_table* prev_function = pointers->current_function;
+	 if (pointers->ctxsp + 1 >= pointers->ctx_bottom + FRAMES) interpret_crash(ctx_overflow, pointers);
 	 pointers->ctxsp++;
-	 if (pointers->ctxsp >= pointers->ctx_bottom + FRAMES) interpret_crash(ctx_overflow, pointers);
 	 pointers->current_function = get_function(pointers->table, *((ushort*)(++pointers->ip)), pointers->count_functions);
 	 prev_context = pointers->current_function->ctx;
 	 pointers->current_function->ctx = pointers->ctxsp;
@@ -747,7 +759,8 @@ void static INLINE command_CALLNATIVE(registers* pointers)
 //Return to call location.
 void static INLINE command_RETURN(registers* pointers)
 {
-	if (pointers->ctxsp->previous_function == NULL || pointers->ctxsp->return_address == NULL || pointers->ctxsp == pointers->ctx_bottom) interpret_crash(ctx_empt, pointers);
+	if (pointers->ctxsp->previous_function == NULL || pointers->ctxsp->return_address == NULL || 
+		pointers->ctxsp == pointers->ctx_bottom) interpret_crash(ctx_empt, pointers);
 	pointers->ip = pointers->ctxsp->return_address;
 	free(pointers->ctxsp->locals);
 	pointers->current_function->ctx = pointers->ctxsp->previous_ctx;
@@ -795,7 +808,7 @@ void interpret_crash(int err_code, registers* pointers)
 //Destroying of all registers. Memory must be free.
 void registers_destruction(registers* pointers)
 {
-	uint i;
+	//uint i;
 	free(pointers->bottom);
 	free(pointers->ctxsp->locals);
 	free(pointers->ctx_bottom);

@@ -16,6 +16,8 @@ void program_crash(int error_code)
 		case ctx_empt: fputs("Error! The appeal to a context which doesn't exist or context is broken!", stderr); break;
 		case ctx_overflow: fputs("Error! Too many frames for one function!", stderr); break;
 		case no_entr_funct: fputs("Error! Can not find an entry point!", stderr); break;
+		case wrng_fname: fputs("Error! Can't open or find this file!", stderr); break;
+		case usage: fputs("Usage: interpreter filename", stderr); break;
 
 		case unknwn: fputs("Unknown error! It is used only for tests and debug.", stderr); break;
 		case stp_commnd: fputs("Execution was stopped by command!", stderr); break;

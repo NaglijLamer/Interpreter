@@ -24,11 +24,11 @@ typedef struct
 	context_t *ctxsp;					//Stack Pointer of context stack.
 }registers;
 
-//Main function of interpreater.
+//Main function of interpreter.
 int interpreter(registers* pointers);
 //Function to reallocate calculation stack. Maybe - unusable in future.
 void static stack_realloc(registers* pointers);
-//Handler of critical runtime errors in interpreater.
+//Handler of critical runtime errors in interpreter.
 void interpret_crash(int err_code, registers* pointers);
 //Free all registers.
 void registers_destruction(registers* pointers);

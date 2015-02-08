@@ -1,4 +1,4 @@
-//File with functions that can read file with byte-code. And create a massive from byte-code functions.
+//File with functions that can read file with byte-code. And create an array from byte-code functions.
 
 #ifdef _MSC_VER
 #define _CRT_SECURE_NO_WARNINGS

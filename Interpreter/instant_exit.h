@@ -11,6 +11,8 @@ typedef enum
 	ctx_empt,
 	ctx_overflow,
 	no_entr_funct,
+	wrng_fname,
+	usage,
 
 	unknwn = 404,
 	stp_commnd = 6109,
