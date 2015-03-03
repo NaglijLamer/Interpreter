@@ -645,9 +645,9 @@ void static INLINE command_STORECTXSVAR(registers* pointers)
 void static INLINE command_DCMP(registers* pointers)
 {
 	if ((pointers->sp - 1) < pointers->bottom) interpret_crash(stck_empt, pointers);
-	if ((pointers->sp)->dnumber > (pointers->sp - 1)->dnumber) command_DLOAD1(pointers);
-	else if ((pointers->sp)->dnumber < (pointers->sp - 1)->dnumber) command_DLOADM1(pointers);
-	else command_DLOAD0(pointers);
+	if ((pointers->sp)->dnumber > (pointers->sp - 1)->dnumber) command_ILOAD1(pointers);
+	else if ((pointers->sp)->dnumber < (pointers->sp - 1)->dnumber) command_ILOADM1(pointers);
+	else command_ILOAD0(pointers);
 }
 
 //Compare 2 topmost ints, pushing libc-style comparator value cmp(upper, lower) as integer.
