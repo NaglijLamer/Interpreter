@@ -745,7 +745,8 @@ void static INLINE command_CALL(registers* pointers)
 	 pointers->ctxsp->locals = (stack_t*)malloc(sizeof(stack_t) * pointers->current_function->locals);
 	 if ((pointers->sp + 2 - pointers->current_function->args) <= pointers->bottom) interpret_crash(stck_empt, pointers);
 	 for (i = 0; i < pointers->current_function->args; i++)
-		 *(pointers->ctxsp->locals + i) = *(pointers->sp - i);
+		 /**(pointers->ctxsp->locals + i) = *(pointers->sp - i);*/
+		 *(pointers->ctxsp->locals + i) = *(pointers->sp - pointers->current_function->args + i);
 	 pointers->sp -= pointers->current_function->args;
 	 pointers->ip = pointers->byte_code + (pointers->current_function->offset) - 1;
 }
