@@ -746,7 +746,7 @@ void static INLINE command_CALL(registers* pointers)
 	 if ((pointers->sp + 2 - pointers->current_function->args) <= pointers->bottom) interpret_crash(stck_empt, pointers);
 	 for (i = 0; i < pointers->current_function->args; i++)
 		 /**(pointers->ctxsp->locals + i) = *(pointers->sp - i);*/
-		 *(pointers->ctxsp->locals + i) = *(pointers->sp - pointers->current_function->args + i);
+		 *(pointers->ctxsp->locals + i) = *(pointers->sp - pointers->current_function->args + i + 1);
 	 pointers->sp -= pointers->current_function->args;
 	 pointers->ip = pointers->byte_code + (pointers->current_function->offset) - 1;
 }
